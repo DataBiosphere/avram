@@ -1,14 +1,11 @@
 package org.broadinstitute.dsde.workbench.entityservice
 
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
-import net.ceedubs.ficus.Ficus._
-
-import scala.concurrent.{ExecutionContext, Future}
+import org.broadinstitute.dsde.workbench.entityservice.api.EntityServiceRoutes
 
 object Boot extends App with LazyLogging {
 

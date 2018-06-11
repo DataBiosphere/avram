@@ -1,22 +1,26 @@
 package org.broadinstitute.dsde.workbench.entityservice.api
 
 
+import akka.http.scaladsl.server
+import akka.http.scaladsl.server.Directives.{complete, get, handleExceptions, pathEndOrSingleSlash, pathPrefix}
+import akka.http.scaladsl.server.{Directive0, ExceptionHandler}
 import akka.actor.ActorSystem
 import akka.event.Logging.LogLevel
 import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.server
-import org.broadinstitute.dsde.workbench.model.ErrorReportJsonSupport._
-import akka.http.scaladsl.server.Directives.{complete, get, handleExceptions, pathEndOrSingleSlash, pathPrefix}
-import akka.http.scaladsl.server.{Directive0, ExceptionHandler}
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.RouteResult.Complete
 import akka.http.scaladsl.server.directives.{DebuggingDirectives, LogEntry, LoggingMagnet}
 import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import com.typesafe.scalalogging.LazyLogging
+import org.broadinstitute.dsde.workbench.entityservice.errorReportSource
+import org.broadinstitute.dsde.workbench.entityservice.model.EntityServiceJsonSupport._
+import org.broadinstitute.dsde.workbench.model.ErrorReportJsonSupport._
 import org.broadinstitute.dsde.workbench.model.{ErrorReport, WorkbenchException, WorkbenchExceptionWithErrorReport}
 
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.{ExecutionContext, Future}
 
 class EntityServiceRoutes()(implicit val system: ActorSystem, val materializer: Materializer, val executionContext: ExecutionContext)
