@@ -1,4 +1,4 @@
-package org.broadinstitute.dsde.workbench.entityservice.model
+package org.broadinstitute.dsde.workbench.avram.model
 
 import java.net.URL
 
@@ -14,7 +14,7 @@ import org.broadinstitute.dsde.workbench.model._
 import spray.json._
 
 
-object EntityServiceJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+object AvramJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit object URLFormat extends JsonFormat[URL] {
     def write(obj: URL) = JsString(obj.toString)

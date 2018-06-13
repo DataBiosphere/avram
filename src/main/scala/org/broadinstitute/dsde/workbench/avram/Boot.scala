@@ -1,11 +1,11 @@
-package org.broadinstitute.dsde.workbench.entityservice
+package org.broadinstitute.dsde.workbench.avram
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
-import org.broadinstitute.dsde.workbench.entityservice.api.EntityServiceRoutes
+import org.broadinstitute.dsde.workbench.avram.api.AvramRoutes
 
 object Boot extends App with LazyLogging {
 
@@ -14,13 +14,13 @@ object Boot extends App with LazyLogging {
     val config = ConfigFactory.load()
 
     // we need an ActorSystem to host our application in
-    implicit val system = ActorSystem("entity-service")
+    implicit val system = ActorSystem("avram")
     implicit val materializer = ActorMaterializer()
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    val entityServiceRoutes = new EntityServiceRoutes()
+    val avramRoutes = new AvramRoutes()
 
-    Http().bindAndHandle(entityServiceRoutes.route, "0.0.0.0", 8080)
+    Http().bindAndHandle(avramRoutes.route, "0.0.0.0", 8080)
       .recover {
         case t: Throwable =>
           logger.error("FATAL - failure starting http server", t)

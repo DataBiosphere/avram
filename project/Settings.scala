@@ -49,7 +49,7 @@ object Settings {
   //coreDefaultSettings (inside commonSettings) sets the project name, which we want to override, so ordering is important.
   //thus commonSettings needs to be added first.
   val rootSettings = commonSettings ++ List(
-    name := "entity-service",
+    name := "avram",
     libraryDependencies ++= rootDependencies
     //the version is applied in rootVersionSettings and is set to 0.1-githash.
     //we don't really use it for anything but we might when we publish our model

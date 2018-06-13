@@ -1,4 +1,4 @@
-package org.broadinstitute.dsde.workbench.entityservice.api
+package org.broadinstitute.dsde.workbench.avram.api
 
 
 import akka.http.scaladsl.server
@@ -15,18 +15,18 @@ import akka.http.scaladsl.server.directives.{DebuggingDirectives, LogEntry, Logg
 import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import com.typesafe.scalalogging.LazyLogging
-import org.broadinstitute.dsde.workbench.entityservice.errorReportSource
-import org.broadinstitute.dsde.workbench.entityservice.model.EntityServiceJsonSupport._
+import org.broadinstitute.dsde.workbench.avram.errorReportSource
+import org.broadinstitute.dsde.workbench.avram.model.AvramJsonSupport._
 import org.broadinstitute.dsde.workbench.model.ErrorReportJsonSupport._
 import org.broadinstitute.dsde.workbench.model.{ErrorReport, WorkbenchException, WorkbenchExceptionWithErrorReport}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.{ExecutionContext, Future}
 
-class EntityServiceRoutes()(implicit val system: ActorSystem, val materializer: Materializer, val executionContext: ExecutionContext)
+class AvramRoutes()(implicit val system: ActorSystem, val materializer: Materializer, val executionContext: ExecutionContext)
   extends LazyLogging {
 
-  def entityServiceRoutes: server.Route =
+  def avramRoutes: server.Route =
     pathPrefix("ping") {
       pathEndOrSingleSlash {
         get {
@@ -38,7 +38,7 @@ class EntityServiceRoutes()(implicit val system: ActorSystem, val materializer: 
     }
 
   def route: server.Route = (logRequestResult & handleExceptions(myExceptionHandler)) {
-    entityServiceRoutes
+    avramRoutes
   }
 
   private val myExceptionHandler = {

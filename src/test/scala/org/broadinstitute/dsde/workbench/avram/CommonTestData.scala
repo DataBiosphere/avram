@@ -1,4 +1,4 @@
-package org.broadinstitute.dsde.workbench.entityservice
+package org.broadinstitute.dsde.workbench.avram
 
 import java.time.Instant
 import java.util.UUID
