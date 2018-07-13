@@ -44,6 +44,10 @@ object Dependencies {
   val akkaTestKit: ModuleID =       "com.typesafe.akka"   %%  "akka-testkit"         % akkaV     % "test"
   val akkaHttpTestKit: ModuleID =   "com.typesafe.akka"   %%  "akka-http-testkit"    % akkaHttpV % "test"
 
+  val unfilteredFilter = "ws.unfiltered" %% "unfiltered-filter" % "0.9.1"
+  val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
+  val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
+
 
   val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
   val googleOAuth2: ModuleID = "com.google.auth" % "google-auth-library-oauth2-http" % "0.9.1"
@@ -92,6 +96,9 @@ object Dependencies {
     akkaTestKit,
     akkaHttpTestKit,
 
+    unfilteredFilter,
+    javaxServlet,
+    jetty,
 
     googleRpc,
     googleOAuth2,
