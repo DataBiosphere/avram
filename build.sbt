@@ -10,14 +10,14 @@ Revolver.settings
 Revolver.enableDebugging(port = 5051, suspend = false)
 
 enablePlugins(AppenginePlugin)
-
-(appengineOnStartHooks in appengineDevServer in Compile) += { () =>
-  println("hello")
-}
-
-(appengineOnStopHooks in appengineDevServer in Compile) += { () =>
-  println("bye")
-}
+//
+//(appengineOnStartHooks in appengineDevServer in Compile) += { () =>
+//  println("hello")
+//}
+//
+//(appengineOnStopHooks in appengineDevServer in Compile) += { () =>
+//  println("bye")
+//}
 
 appengineDataNucleusSettings
 

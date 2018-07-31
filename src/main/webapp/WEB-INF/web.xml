@@ -1,19 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <filter>
-        <filter-name>echofilter</filter-name>
-        <filter-class>simple.EchoFilter</filter-class>
-    </filter>
+    <!--<servlet>-->
+        <!--<servlet-name>EndpointsServlet</servlet-name>-->
+        <!--<servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>-->
+        <!--<init-param>-->
+            <!--<param-name>services</param-name>-->
+            <!--<param-value>org.broadinstitute.dsde.workbench.avram.api.Skeleton</param-value>-->
+        <!--</init-param>-->
+    <!--</servlet>-->
+    <!--&lt;!&ndash; Route API method requests to the backend. &ndash;&gt;-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>EndpointsServlet</servlet-name>-->
+        <!--<url-pattern>/_ah/api/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
-    <filter-mapping>
-        <filter-name>echofilter</filter-name>
-        <url-pattern>*</url-pattern>
-    </filter-mapping>
-    <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
-    </session-config>
+    <!--<filter>-->
+        <!--<filter-name>echofilter</filter-name>-->
+        <!--<filter-class>simple.EchoFilter</filter-class>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>echofilter</filter-name>-->
+        <!--<url-pattern>*</url-pattern>-->
+    <!--</filter-mapping>-->
+    <!--<session-config>-->
+        <!--<session-timeout>-->
+            <!--30-->
+        <!--</session-timeout>-->
+    <!--</session-config>-->
+    <!--<welcome-file-list>-->
+        <!--<welcome-file>index.html</welcome-file>-->
+    <!--</welcome-file-list>-->
+
+    <!-- [START endpoints-frameworks] -->
+    <servlet>
+        <servlet-name>EndpointsServlet</servlet-name>
+        <servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>
+        <init-param>
+            <param-name>services</param-name>
+            <param-value>org.broadinstitute.dsde.workbench.avram.api.Greetings</param-value>
+        </init-param>
+        <init-param>
+            <param-name>restricted</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EndpointsServlet</servlet-name>
+        <url-pattern>/_ah/api/*</url-pattern>
+    </servlet-mapping>
+    <!-- [END endpoints-frameworks] -->
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

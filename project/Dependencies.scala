@@ -26,6 +26,8 @@ object Dependencies {
   val jacksonAnnotations: ModuleID = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonV
   val jacksonDatabind: ModuleID =    "com.fasterxml.jackson.core" % "jackson-databind"    % jacksonV
   val jacksonCore: ModuleID =        "com.fasterxml.jackson.core" % "jackson-core"        % jacksonV
+  val jacksonScalaModule: ModuleID = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.6"
+  val lombok: ModuleID = "org.projectlombok" % "lombok" % "1.18.2" % "provided"
 
   val logbackClassic: ModuleID = "ch.qos.logback"             %  "logback-classic" % "1.2.3"
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
@@ -33,7 +35,7 @@ object Dependencies {
   val swaggerUi: ModuleID =      "org.webjars"                %  "swagger-ui"      % "2.2.5"
   val ficus: ModuleID =          "com.iheart"                 %% "ficus"           % "1.4.3"
   val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
-  val httpClient: ModuleID =     "org.apache.httpcomponents"  % "httpclient"       % "4.5.5"  // upgrading a transitive dependency to avoid security warnings
+  val httpClient: ModuleID =     "org.apache.httpcomponents"  %  "httpclient"       % "4.5.5"  // upgrading a transitive dependency to avoid security warnings
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   val akkaActor: ModuleID =         "com.typesafe.akka"   %%  "akka-actor"           % akkaV
@@ -46,7 +48,17 @@ object Dependencies {
 
   val unfilteredFilter = "ws.unfiltered" %% "unfiltered-filter" % "0.9.1"
   val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
-  val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
+  val jetty = "org.mortbay.jetty" % "jetty" % "6.1.26" % "container"
+
+  //Cloud Endpoints
+  // make sure these are up to date
+  // do I need com.google.cloud.tools.endpoints-framework-server or com.google.cloud.tools.appengine PLUGINS?
+  val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
+  val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
+  val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
+//  val googleEndpointsFrameworkServer = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
+
+  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
 
 
   val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
@@ -78,6 +90,7 @@ object Dependencies {
     jacksonAnnotations,
     jacksonDatabind,
     jacksonCore,
+    jacksonScalaModule,
 
     logbackClassic,
     ravenLogback,
@@ -87,6 +100,8 @@ object Dependencies {
     cats,
     httpClient,
     enumeratum,
+
+    lombok,
 
     akkaActor,
     akkaContrib,
@@ -98,7 +113,13 @@ object Dependencies {
 
     unfilteredFilter,
     javaxServlet,
-    jetty,
+    //jetty,
+
+    googleEndpointsFramework,
+    googleEndpointsManagementControl,
+    googleEndpointsAuth,
+
+    googleAppEngine,
 
     googleRpc,
     googleOAuth2,

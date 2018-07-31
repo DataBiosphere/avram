@@ -16,7 +16,7 @@ object Settings {
   )
 
   //coreDefaultSettings + defaultConfigs = the now deprecated defaultSettings
-  val commonBuildSettings = Defaults.coreDefaultSettings ++ Defaults.defaultConfigs ++ Seq(
+  val commonBuildSettings = Defaults.coreDefaultSettings ++ Seq(
     javaOptions += "-Xmx2G",
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
   )

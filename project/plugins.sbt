@@ -11,6 +11,8 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.0")
 
 addSbtPlugin("com.eed3si9n" % "sbt-appengine" % "0.8.0")
 
+//addSbtPlugin("com.google.cloud.tools" % "endpoints-framework-server")
+
 //{
 //  val pluginVersion = System.getProperty("plugin.version")
 //  if(pluginVersion == null)
