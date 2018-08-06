@@ -8,6 +8,9 @@ object Dependencies {
   val scalaLoggingV = "3.9.0"
   val scalaTestV    = "3.0.5"
   val slickV        = "3.2.3"
+  // Cannot use 42.2.3 or 42.2.4 because it leads to "java.lang.NoClassDefFoundError: java.time.Duration is a restricted class" errors when establishing the connection
+  val postgresDriverV = "42.2.2"
+  val socketFactoryV = "1.0.10"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -58,7 +61,7 @@ object Dependencies {
   val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
 //  val googleEndpointsFrameworkServer = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
 
-  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
+  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.63"
 
 
   val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
@@ -83,6 +86,9 @@ object Dependencies {
   val hikariCP: ModuleID =  "com.typesafe.slick" %% "slick-hikaricp"        % slickV
   val mysql: ModuleID =     "mysql"               % "mysql-connector-java"  % "8.0.11"
   val liquibase: ModuleID = "org.liquibase"       % "liquibase-core"        % "3.5.3"
+
+  val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
+  val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
 
   val rootDependencies = Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
@@ -130,7 +136,8 @@ object Dependencies {
 
     slick,
     hikariCP,
-    mysql,
+    postgresDriver,
+    socketFactory,
     liquibase,
 
     workbenchUtil,

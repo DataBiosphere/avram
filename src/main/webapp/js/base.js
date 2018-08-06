@@ -131,6 +131,15 @@ google.devrel.samples.hello.listGreeting = function() {
       });
 };
 
+google.devrel.samples.hello.now = function() {
+  gapi.client.helloworld.greetings.now().execute(
+      function(resp) {
+        if (!resp.code) {
+          google.devrel.samples.hello.print(resp);
+        }
+      });
+};
+
 /**
  * Gets a greeting a specified number of times.
  * @param {string} greeting Greeting to repeat.
@@ -167,6 +176,10 @@ google.devrel.samples.hello.authedGreeting = function(id) {
  * Enables the button callbacks in the UI.
  */
 google.devrel.samples.hello.enableButtons = function() {
+  document.getElementById('now').onclick = function() {
+    google.devrel.samples.hello.now();
+  }
+
   document.getElementById('getGreeting').onclick = function() {
     google.devrel.samples.hello.getGreeting(
         document.getElementById('id').value);
