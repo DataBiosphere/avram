@@ -6,6 +6,8 @@ object Dependencies {
   val scalaLoggingV = "3.9.0"
   val scalaTestV    = "3.0.5"
   val slickV        = "3.2.3"
+  val postgresDriverV = "42.2.4"
+  val socketFactoryV = "1.0.10"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -69,6 +71,9 @@ object Dependencies {
   val mysql: ModuleID =     "mysql"               % "mysql-connector-java"  % "8.0.11"
   val liquibase: ModuleID = "org.liquibase"       % "liquibase-core"        % "3.5.3"
 
+  val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
+  val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
+
   val rootDependencies = Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
@@ -106,7 +111,8 @@ object Dependencies {
 
     slick,
     hikariCP,
-    mysql,
+    postgresDriver,
+    socketFactory,
     liquibase,
 
     workbenchUtil,
