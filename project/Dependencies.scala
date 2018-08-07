@@ -1,8 +1,6 @@
 import sbt._
 
 object Dependencies {
-  val akkaV         = "2.5.12"
-  val akkaHttpV     = "10.1.1"
   val jacksonV      = "2.9.5"
   val googleV       = "1.23.0"
   val scalaLoggingV = "3.9.0"
@@ -38,28 +36,15 @@ object Dependencies {
   val httpClient: ModuleID =     "org.apache.httpcomponents"  %  "httpclient"       % "4.5.5"  // upgrading a transitive dependency to avoid security warnings
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
-  val akkaActor: ModuleID =         "com.typesafe.akka"   %%  "akka-actor"           % akkaV
-  val akkaContrib: ModuleID =       "com.typesafe.akka"   %%  "akka-contrib"         % akkaV
-  val akkaSlf4j: ModuleID =         "com.typesafe.akka"   %%  "akka-slf4j"           % akkaV
-  val akkaHttp: ModuleID =          "com.typesafe.akka"   %%  "akka-http"            % akkaHttpV           excludeAll(excludeAkkaActor)
-  val akkaHttpSprayJson: ModuleID = "com.typesafe.akka"   %%  "akka-http-spray-json" % akkaHttpV
-  val akkaTestKit: ModuleID =       "com.typesafe.akka"   %%  "akka-testkit"         % akkaV     % "test"
-  val akkaHttpTestKit: ModuleID =   "com.typesafe.akka"   %%  "akka-http-testkit"    % akkaHttpV % "test"
-
   val unfilteredFilter = "ws.unfiltered" %% "unfiltered-filter" % "0.9.1"
   val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
-  val jetty = "org.mortbay.jetty" % "jetty" % "6.1.26" % "container"
 
-  //Cloud Endpoints
-  // make sure these are up to date
-  // do I need com.google.cloud.tools.endpoints-framework-server or com.google.cloud.tools.appengine PLUGINS?
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
   val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
-//  val googleEndpointsFrameworkServer = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
+  val googleLogging = "com.google.cloud" % "google-cloud-logging" % "1.35.0"
 
   val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
-
 
   val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
   val googleOAuth2: ModuleID = "com.google.auth" % "google-auth-library-oauth2-http" % "0.9.1"
@@ -103,21 +88,13 @@ object Dependencies {
 
     lombok,
 
-    akkaActor,
-    akkaContrib,
-    akkaSlf4j,
-    akkaHttp,
-    akkaHttpSprayJson,
-    akkaTestKit,
-    akkaHttpTestKit,
-
     unfilteredFilter,
     javaxServlet,
-    //jetty,
 
     googleEndpointsFramework,
     googleEndpointsManagementControl,
     googleEndpointsAuth,
+    googleLogging,
 
     googleAppEngine,
 
@@ -126,7 +103,6 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
-    mockito,
 
     slick,
     hikariCP,
