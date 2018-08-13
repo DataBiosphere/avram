@@ -2,7 +2,6 @@ package org.broadinstitute.dsde.workbench.avram.api
 
 import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.api.server.spi.config.{Api, ApiMethod}
 import com.typesafe.config.ConfigFactory
 import org.broadinstitute.dsde.workbench.avram.util.Logger
