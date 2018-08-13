@@ -2,8 +2,8 @@
 set -e
 set -x
 
-VAULT_TOKEN=c2798058d09b5e15722199134da8eeea8a28aecf
-GIT_BRANCH=gawb3639
+VAULT_TOKEN=$1
+GIT_BRANCH=$2
 
 #need to get the environment from the branch name
 #if [ "$GIT_BRANCH" == "develop" ]; then
