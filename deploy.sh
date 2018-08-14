@@ -30,11 +30,11 @@ GOOGLE_PROJECT=broad-avram-$ENVIRONMENT
 ##docker build -f docker/Dockerfile -t databiosphere/bond:deploy .
 #docker build -f Dockerfile -t ansingh7115/avram .
 
-mkdir -p /home/gcloud
+#mkdir -p /home/gcloud
 curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.64.zip' > /tmp/appengine.zip
-unzip -d /home/gcloud /tmp/appengine.zip
+unzip /tmp/appengine.zip
 
-export APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.64
+export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
 #create war file
 sbt appengineDeploy
 
