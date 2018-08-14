@@ -25,6 +25,7 @@ GOOGLE_PROJECT=broad-avram-$ENVIRONMENT
 
 ##pull the credentials for the service account
 docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault read --format=json "secret/dsde/avram/$ENVIRONMENT/deploy-account.json" | jq .data > deploy_account.json
+#docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault read --format=json "secret/dsde/avram/$ENVIRONMENT/deploy-account.json" | jq .data > deploy_account.json
 #
 ##build the docker image so we can deploy
 ##docker build -f docker/Dockerfile -t databiosphere/bond:deploy .
