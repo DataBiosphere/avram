@@ -39,7 +39,9 @@ unzip /tmp/appengine.zip
 
 export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
 #create war file
-sbt appengineDeploy
+sbt package
+
+
 
 ##render the endpoints json and then deploy it
 #docker run -v $PWD/startup.sh:/app/startup.sh \
