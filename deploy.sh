@@ -41,7 +41,7 @@ export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
 #create war file
 sbt package
 $PWD/appengine-java-sdk-1.9.64/bin/appcfg.sh --noauth_local_webserver update $PWD/target/webapp
-
+#try try again
 
 
 
