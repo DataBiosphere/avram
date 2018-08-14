@@ -12,6 +12,10 @@ RUN gcloud components update --quiet && gcloud components install beta --quiet
 RUN mkdir -p /home/gcloud \
 && curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.63.zip' > /tmp/appengine.zip \
 && unzip -d /home/gcloud /tmp/appengine.zip \
-&& rm /tmp/appengine.zip # \
+&& rm /tmp/appengine.zip
 
+#ENV APPENGINE_SDK_HOME /home/gcloud/appengine-java-sdk-1.9.63
+#RUN sbt compile appengineDeploy
+
+#RUN ls -a | head
 #&& export APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.63

@@ -30,6 +30,9 @@ docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault re
 #docker build -f docker/Dockerfile -t databiosphere/bond:deploy .
 docker build -f docker/Dockerfile -t ansingh7115/avram .
 
+#create war file
+sbt appengineDeploy
+
 #render the endpoints json and then deploy it
 docker run -v $PWD/startup.sh:/app/startup.sh \
     -v $PWD/output:/output \
