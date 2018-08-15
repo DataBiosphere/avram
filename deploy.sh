@@ -34,7 +34,7 @@ unzip /tmp/appengine.zip
 export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
 
 # deploy endpoints
-gcloud endpoints services deploy openapi.yaml
+gcloud endpoints services deploy $PWD/openapi.yaml
 
 # deploy backend
 sbt package
