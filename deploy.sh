@@ -31,7 +31,7 @@ docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault re
 ##docker build -f docker/Dockerfile -t databiosphere/bond:deploy .
 #docker build -f Dockerfile -t ansingh7115/avram .
 
-gcloud auth activate-service-account --key-file=deploy_account.json
+#gcloud auth activate-service-account --key-file=deploy_account.json
 
 #mkdir -p /home/gcloud
 curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.64.zip' > /tmp/appengine.zip
@@ -40,7 +40,7 @@ unzip /tmp/appengine.zip
 export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
 #create war file
 sbt package
-$PWD/appengine-java-sdk-1.9.64/bin/appcfg.sh --noauth_local_webserver update $PWD/target/webapp
+$PWD/appengine-java-sdk-1.9.64/bin/appcfg.sh --service_account_json_key_file=deploy_account.json update $PWD/target/webapp
 #try try again
 
 
