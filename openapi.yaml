@@ -1,0 +1,53 @@
+# Copyright 2017 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+swagger: "2.0"
+info:
+  title: "Avram"
+  description: "Entity Service"
+  version: "1.0.0"
+# This field will be replaced by the deploy_api.sh script. - lol no
+host: "broad-avram-dev.appspot.com"
+
+#security:
+#  - googleoauth:
+#    - openid
+#    - email
+#    - profile
+#
+#securityDefinitions:
+#  googleoauth:
+#    type: oauth2
+#    authorizationUrl: 'https://accounts.google.com/o/oauth2/auth'
+#    flow: implicit
+#    scopes:
+#      openid: open id authorization
+#      email: email authorization
+#      profile: profile authorization
+#      https://www.googleapis.com/auth/cloud-billing: GCS billing
+
+schemes:
+  - "https"
+paths:
+  "/avram/v1/ping":
+    get:
+      description: "ping"
+      operationId: "ping"
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: string
+        400:
+          description: "Endpoint not found"
