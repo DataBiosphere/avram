@@ -3,11 +3,10 @@
 {{with $googleProject := env "GOOGLE_PROJ"}}
 {{with $serviceVersion := env "SERVICE_VERSION"}}
 
-
 avram-client {
-    client_id = $client.id
-    google-project = $googleProject
- }
-
+    service-version = "{{$serviceVersion}}"
+    client-id = "{{$client.Data.id}}"
+    google-project = "{{$googleProject}}"
+}
 
 {{end}}{{end}}{{end}}{{end}}
