@@ -22,12 +22,22 @@ else
 fi
 
 GOOGLE_PROJECT=broad-avram-$ENVIRONMENT
+SERVICE_VERSION=version1
 
 # pull the credentials for the service account
 docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault read --format=json "secret/dsde/avram/$ENVIRONMENT/deploy-account.json" | jq .data > deploy_account.json
 
 # Auth with deploy service account
 gcloud auth activate-service-account --key-file=deploy_account.json
+
+docker run -v $PWD:/app \
+  -e GOOGLE_PROJ=$GOOGLE_PROJECT \
+  -e SERVICE_VERSION=$SERVICE_VERSION \
+  -e INPUT_PATH=/app \
+  -e OUT_PATH=/app \
+  -e VAULT_TOKEN=$VAULT_TOKEN \
+  -e ENVIRONMENT=$ENVIRONMENT \
+  broadinstitute/dsde-toolbox render-templates.sh
 
 # get appenginge sdk
 curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.64.zip' > /tmp/appengine.zip
