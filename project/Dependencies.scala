@@ -1,13 +1,14 @@
 import sbt._
 
 object Dependencies {
-  val jacksonV      = "2.9.5"
-  val googleV       = "1.23.0"
-  val scalaLoggingV = "3.9.0"
-  val scalaTestV    = "3.0.5"
-  val slickV        = "3.2.3"
+  val jacksonV        = "2.9.5"
+  val googleV         = "1.23.0"
+  val scalaLoggingV   = "3.9.0"
+  val scalaTestV      = "3.0.5"
+  val slickV          = "3.2.3"
   val postgresDriverV = "42.2.4"
-  val socketFactoryV = "1.0.10"
+  val socketFactoryV  = "1.0.10"
+  val dbcpV           = "2.5.0"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -67,8 +68,7 @@ object Dependencies {
   val sam: ModuleID = "org.broadinstitute.dsde.sam-client" %% "sam" % samV
 
   val slick: ModuleID =     "com.typesafe.slick" %% "slick"                 % slickV
-  val hikariCP: ModuleID =  "com.typesafe.slick" %% "slick-hikaricp"        % slickV
-  val mysql: ModuleID =     "mysql"               % "mysql-connector-java"  % "8.0.11"
+  val dbcp2: ModuleID = "org.apache.commons" % "commons-dbcp2" % dbcpV
   val liquibase: ModuleID = "org.liquibase"       % "liquibase-core"        % "3.5.3"
 
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
@@ -110,9 +110,9 @@ object Dependencies {
     scalaTest,
 
     slick,
-    hikariCP,
     postgresDriver,
     socketFactory,
+    dbcp2,
     liquibase,
 
     workbenchUtil,
