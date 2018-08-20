@@ -24,7 +24,7 @@ fi
 GOOGLE_PROJECT=broad-avram-$ENVIRONMENT
 SERVICE_VERSION=version1
 
-# pull the credentials for the service account
+# pull the credentials for the service account 
 docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault read --format=json "secret/dsde/avram/$ENVIRONMENT/deploy-account.json" | jq .data > deploy_account.json
 
 # Auth with deploy service account
