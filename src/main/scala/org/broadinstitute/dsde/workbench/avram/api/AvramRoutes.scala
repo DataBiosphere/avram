@@ -1,7 +1,7 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import java.util.logging.Logger
+import org.broadinstitute.dsde.workbench.avram.util.Logger
 
 
 case class Pong()
@@ -10,11 +10,11 @@ case class Pong()
 @Api(name = "avram", version = "v1", scopes = Array("https://www.googleapis.com/auth/userinfo.email"), audiences = Array(""))
 class AvramRoutes {
 
-  private val log = Logger.getLogger(getClass.getName)
+  private val log = new Logger
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
-    log.info("we pinged.")
+    log.log("HIII")
     Pong()
   }
 }
