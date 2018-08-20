@@ -14,7 +14,7 @@ class Logger {
 
   private def entry(text: String): LogEntry = LogEntry
     .newBuilder(StringPayload.of(text))
-    .setSeverity(Severity.ERROR)
+    .setSeverity(Severity.INFO)
     .setLogName(logName)
     .setResource(MonitoredResource.newBuilder("global").build)
     .build
