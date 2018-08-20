@@ -16,7 +16,7 @@ class Logger {
     .newBuilder(StringPayload.of(text))
     .setSeverity(Severity.INFO)
     .setLogName(logName)
-    .setResource(MonitoredResource.newBuilder("cloud debugger").build)
+    .setResource(MonitoredResource.newBuilder("cloud_debugger_resource").build)
     .build
 
   def log(message: String) = {
