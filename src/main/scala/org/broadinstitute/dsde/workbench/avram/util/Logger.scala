@@ -1,7 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.util
 
 import java.util.Collections
-import java.util.Map
 import com.google.cloud.MonitoredResource
 import com.google.cloud.logging.Payload.StringPayload
 import com.google.cloud.logging.{LogEntry, Logging, LoggingOptions, Severity}
