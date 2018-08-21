@@ -25,7 +25,6 @@ object Dependencies {
   val jacksonDatabind: ModuleID =    "com.fasterxml.jackson.core" % "jackson-databind"    % jacksonV
   val jacksonCore: ModuleID =        "com.fasterxml.jackson.core" % "jackson-core"        % jacksonV
   val jacksonScalaModule: ModuleID = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.6"
-  val lombok: ModuleID = "org.projectlombok" % "lombok" % "1.18.2" % "provided"
 
   val logbackClassic: ModuleID = "ch.qos.logback"             %  "logback-classic" % "1.2.3"
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
@@ -85,8 +84,6 @@ object Dependencies {
     cats,
     httpClient,
     enumeratum,
-
-    lombok,
 
     unfilteredFilter,
     javaxServlet,
