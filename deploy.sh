@@ -27,17 +27,20 @@ SERVICE_VERSION=version1
 # pull the credentials for the service account
 docker run --rm -e VAULT_TOKEN=$VAULT_TOKEN broadinstitute/dsde-toolbox vault read --format=json "secret/dsde/avram/$ENVIRONMENT/deploy-account.json" | jq .data > deploy_account.json
 
-# Auth with deploy service account
-gcloud auth activate-service-account --key-file=deploy_account.json
-
-# get appenginge sdk
-curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.64.zip' > /tmp/appengine.zip
-unzip /tmp/appengine.zip
-export APPENGINE_SDK_HOME=$PWD/appengine-java-sdk-1.9.64
-
 # deploy endpoints
-gcloud endpoints services deploy $PWD/openapi.yaml --project=$GOOGLE_PROJECT
+docker run \
+    -v $PWD:/app \
+    ansingh7115/avram /bin/bash -c \
+    "cd /app; gcloud auth activate-service-account --key-file=deploy_account.json && gcloud endpoints services deploy /app/openapi.yaml --project=$GOOGLE_PROJECT"
 
-# deploy backend
-sbt package
-$PWD/appengine-java-sdk-1.9.64/bin/appcfg.sh --service_account_json_key_file=deploy_account.json update $PWD/target/webapp
+# build app engine app
+docker run \
+    -v $PWD:/app \
+    ansingh7115/avram /bin/bash -c \
+    "cd /app; APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.63 sbt package"
+
+# deploy app engine app
+docker run \
+    -v $PWD:/app \
+    ansingh7115/avram /bin/bash -c \
+    "/home/gcloud/appengine-java-sdk-1.9.63/bin/appcfg.sh --service_account_json_key_file=/app/deploy_account.json update /app/target/webapp"
