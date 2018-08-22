@@ -1,9 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
-import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
-
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import com.typesafe.config.ConfigFactory
 import org.broadinstitute.dsde.workbench.avram.util.{DataSource, Logger}
 
 import scala.concurrent.duration.Duration
@@ -46,14 +43,5 @@ class AvramRoutes {
   private def fetchTimestampFromDBWithSlick(): String = {
     val now = Await.result(DataSource.database.run(sql"select now()".as[String]), Duration.Inf)
     now.head
-  }
-
-  private def fetchTimestampFromDBWithJDBC(): String = {
-    val config = ConfigFactory.load().getConfig("postgres")
-    val conn: Connection = DriverManager.getConnection(config.getString("url"), config.getString("user"), config.getString("password"))
-    val statement: PreparedStatement = conn.prepareStatement("select now()")
-    val resultSet: ResultSet = statement.executeQuery()
-    resultSet.next()
-    resultSet.getString(1)
   }
 }
