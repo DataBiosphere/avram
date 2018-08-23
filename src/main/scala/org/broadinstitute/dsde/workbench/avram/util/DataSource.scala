@@ -4,15 +4,19 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.commons.dbcp2.BasicDataSource
 import slick.jdbc.PostgresProfile.api._
 
+import scala.util.Try
+
 object DataSource {
   private val config = ConfigFactory.load().getConfig("dbcpDataSource")
+  private val url = Try(sys.env("TEST_JDBC_URL")).getOrElse(config.getString("url"))
+  private val password = Try(sys.env("TEST_DB_PASSWORD")).getOrElse(config.getString("password"))
 
   // See https://commons.apache.org/proper/commons-dbcp/configuration.html for configuration options and defaults
   val ds = new BasicDataSource()
   ds.setDriverClassName(config.getString("driverClassName"))
-  ds.setUrl(config.getString("url"))
+  ds.setUrl(url)
   ds.setUsername(config.getString("username"))
-  ds.setPassword(config.getString("password"))
+  ds.setPassword(password)
   ds.setMaxTotal(config.getInt("maxTotal"))
 
   val database = Database.forDataSource(ds, Option(ds.getMaxTotal), AsyncExecutor("Avram Executor", config.getInt("slick.numThreads"), config.getInt("slick.queueSize")))

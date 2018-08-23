@@ -1,17 +1,17 @@
 package org.broadinstitute.dsde.workbench.avram.integration
 
-import slick.jdbc.PostgresProfile.api._
+import org.broadinstitute.dsde.workbench.avram.util.DataSource
 import org.scalatest.FreeSpec
+import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
 class PostgreSQLSpec extends FreeSpec {
 
   "should fetch" - {
     "using slick" in {
-      val db = Database.forConfig("postgres")
+      val db = DataSource.database
       try {
         val action: DBIO[Seq[String]] = sql"select now()".as[String]
         val value: Seq[String] = Await.result(db.run(action), Duration.Inf)
