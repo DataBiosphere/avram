@@ -42,4 +42,4 @@ docker run \
 docker run \
     -v $PWD:/app \
     ansingh7115/avram /bin/bash -c \
-    "/home/gcloud/appengine-java-sdk-1.9.63/bin/appcfg.sh --service_account_json_key_file=/app/deploy_account.json update /app/target/webapp"
+    "/home/gcloud/appengine-java-sdk-1.9.64/bin/appcfg.sh --service_account_json_key_file=/app/deploy_account.json update /app/target/webapp"

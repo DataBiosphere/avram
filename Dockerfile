@@ -14,8 +14,8 @@ RUN mkdir -p /home/gcloud \
 && unzip -d /home/gcloud /tmp/appengine.zip \
 && rm /tmp/appengine.zip
 
-#ENV APPENGINE_SDK_HOME /home/gcloud/appengine-java-sdk-1.9.63
+#ENV APPENGINE_SDK_HOME /home/gcloud/appengine-java-sdk-1.9.64
 #RUN sbt compile appengineDeploy
 
 #RUN ls -a | head
-#&& export APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.63
+#&& export APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.64
