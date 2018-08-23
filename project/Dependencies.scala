@@ -76,16 +76,16 @@ object Dependencies {
     jacksonCore,
     jacksonScalaModule,
 
-    logbackClassic,
+    logbackClassic, //
     ravenLogback,
     scalaLogging,
-    swaggerUi,
+    swaggerUi, //
     ficus,
     cats,
-    httpClient,
+    httpClient,//
     enumeratum,
 
-    unfilteredFilter,
+    unfilteredFilter,//
     javaxServlet,
 
     googleEndpointsFramework,
@@ -95,7 +95,7 @@ object Dependencies {
 
     googleAppEngine,
 
-    googleRpc,
+    googleRpc,//
     googleOAuth2,
     googleSourceRepositories,
 

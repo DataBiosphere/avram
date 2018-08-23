@@ -28,7 +28,7 @@ class Logger {
     .setResource(MonitoredResource.newBuilder(resourceType).setLabels(Map("project_id" -> projectId, "app" -> "avram").asJava).build)
     .build
 
-  def log(message: String) = {
+  def log(message: String, severity: Severity) = {
     logging.write(Collections.singleton(entry(message)))
   }
 }
