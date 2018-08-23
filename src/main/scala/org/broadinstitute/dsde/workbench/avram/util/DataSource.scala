@@ -4,11 +4,8 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.commons.dbcp2.BasicDataSource
 import slick.jdbc.PostgresProfile.api._
 
-import scala.util.Try
-
 object DataSource {
   private val config = ConfigFactory.load().getConfig("dbcpDataSource")
-
 
   // See https://commons.apache.org/proper/commons-dbcp/configuration.html for configuration options and defaults
   val ds = new BasicDataSource()
