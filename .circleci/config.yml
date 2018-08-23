@@ -14,7 +14,7 @@ jobs:
         environment:
           POSTGRES_USER: avram
           POSTGRES_PASSWORD: test
-          POSTGRES_DB: avram
+          POSTGRES_DB: testdb
 
     working_directory: ~/repo
 
