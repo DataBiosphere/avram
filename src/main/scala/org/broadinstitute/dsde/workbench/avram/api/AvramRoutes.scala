@@ -16,7 +16,6 @@ case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int,
 
 @Api(name = "avram", version = "v1", scopes = Array("https://www.googleapis.com/auth/userinfo.email"), clientIds = Array(""), audiences = Array(""))
 class AvramRoutes {
-  val logger = new Logger
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
