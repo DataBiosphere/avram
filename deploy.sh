@@ -14,8 +14,6 @@ elif [ "$GIT_BRANCH" == "staging" ]; then
 	ENVIRONMENT="staging"
 elif [ "$GIT_BRANCH" == "master" ]; then
 	ENVIRONMENT="prod"
-elif [ "$GIT_BRANCH" == "gawb3639" ]; then
-	ENVIRONMENT="dev"
 else
 	echo "Unknown Git branch $GIT_BRANCH"
 	#exit 1
@@ -37,7 +35,7 @@ docker run \
 docker run \
     -v $PWD:/app \
     ansingh7115/avram /bin/bash -c \
-    "cd /app; APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.63 sbt package"
+    "cd /app; APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.64 sbt package"
 
 # deploy app engine app
 docker run \
