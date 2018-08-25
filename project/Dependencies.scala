@@ -1,8 +1,6 @@
 import sbt._
 
 object Dependencies {
-  val akkaV         = "2.5.12"
-  val akkaHttpV     = "10.1.1"
   val jacksonV      = "2.9.5"
   val googleV       = "1.23.0"
   val scalaLoggingV = "3.9.0"
@@ -26,26 +24,23 @@ object Dependencies {
   val jacksonAnnotations: ModuleID = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonV
   val jacksonDatabind: ModuleID =    "com.fasterxml.jackson.core" % "jackson-databind"    % jacksonV
   val jacksonCore: ModuleID =        "com.fasterxml.jackson.core" % "jackson-core"        % jacksonV
+  val jacksonScalaModule: ModuleID = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.6"
 
-  val logbackClassic: ModuleID = "ch.qos.logback"             %  "logback-classic" % "1.2.3"
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
   val scalaLogging: ModuleID =   "com.typesafe.scala-logging" %% "scala-logging"   % scalaLoggingV
-  val swaggerUi: ModuleID =      "org.webjars"                %  "swagger-ui"      % "2.2.5"
   val ficus: ModuleID =          "com.iheart"                 %% "ficus"           % "1.4.3"
   val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
-  val httpClient: ModuleID =     "org.apache.httpcomponents"  % "httpclient"       % "4.5.5"  // upgrading a transitive dependency to avoid security warnings
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
-  val akkaActor: ModuleID =         "com.typesafe.akka"   %%  "akka-actor"           % akkaV
-  val akkaContrib: ModuleID =       "com.typesafe.akka"   %%  "akka-contrib"         % akkaV
-  val akkaSlf4j: ModuleID =         "com.typesafe.akka"   %%  "akka-slf4j"           % akkaV
-  val akkaHttp: ModuleID =          "com.typesafe.akka"   %%  "akka-http"            % akkaHttpV           excludeAll(excludeAkkaActor)
-  val akkaHttpSprayJson: ModuleID = "com.typesafe.akka"   %%  "akka-http-spray-json" % akkaHttpV
-  val akkaTestKit: ModuleID =       "com.typesafe.akka"   %%  "akka-testkit"         % akkaV     % "test"
-  val akkaHttpTestKit: ModuleID =   "com.typesafe.akka"   %%  "akka-http-testkit"    % akkaHttpV % "test"
+  val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
 
+  val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
+  val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
+  val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
+  val googleLogging = "com.google.cloud" % "google-cloud-logging" % "1.35.0"
 
-  val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
+  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
+
   val googleOAuth2: ModuleID = "com.google.auth" % "google-auth-library-oauth2-http" % "0.9.1"
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
 
@@ -74,31 +69,27 @@ object Dependencies {
     jacksonAnnotations,
     jacksonDatabind,
     jacksonCore,
+    jacksonScalaModule,
 
-    logbackClassic,
     ravenLogback,
     scalaLogging,
-    swaggerUi,
     ficus,
     cats,
-    httpClient,
     enumeratum,
 
-    akkaActor,
-    akkaContrib,
-    akkaSlf4j,
-    akkaHttp,
-    akkaHttpSprayJson,
-    akkaTestKit,
-    akkaHttpTestKit,
+    javaxServlet,
 
+    googleEndpointsFramework,
+    googleEndpointsManagementControl,
+    googleEndpointsAuth,
+    googleLogging,
 
-    googleRpc,
+    googleAppEngine,
+
     googleOAuth2,
     googleSourceRepositories,
 
     scalaTest,
-    mockito,
 
     slick,
     hikariCP,

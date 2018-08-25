@@ -1,20 +1,13 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
-
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{FlatSpec, Matchers}
 
-class AvramRoutesSpec extends FlatSpec with Matchers with ScalatestRouteTest {
+class AvramRoutesSpec extends FlatSpec with Matchers {
 
-  class TestAvramRoutes()
-    extends AvramRoutes
-
-  "AvramRoutes" should "200 on ping" in {
-    val avramRoutes = new TestAvramRoutes()
-
-    Get("/ping") ~> avramRoutes.route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
+  //some comments and stuff
+  "AvramRoutes" should "should return Pong() on ping" in {
+    val avramRoutes = new AvramRoutes()
+    avramRoutes.ping shouldEqual Pong()
   }
+
 }

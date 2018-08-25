@@ -1,0 +1,24 @@
+swagger: "2.0"
+info:
+  title: "Avram"
+  description: "Entity Service"
+  version: "1.0.0"
+# When we add more environments for avram this will need to be template-ized and the host name
+# would be put in config
+host: "broad-avram-dev.appspot.com"
+
+
+schemes:
+  - "https"
+paths:
+  "/avram/v1/ping":
+    get:
+      description: "ping"
+      operationId: "ping"
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: string
+        400:
+          description: "Endpoint not found"
