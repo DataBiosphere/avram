@@ -14,8 +14,6 @@ elif [ "$GIT_BRANCH" == "staging" ]; then
 	ENVIRONMENT="staging"
 elif [ "$GIT_BRANCH" == "master" ]; then
 	ENVIRONMENT="prod"
-elif [ "$GIT_BRANCH" == "gawb3639" ]; then
-	ENVIRONMENT="dev"
 else
 	echo "Unknown Git branch $GIT_BRANCH"
 	#exit 1
