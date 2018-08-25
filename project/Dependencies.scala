@@ -26,16 +26,12 @@ object Dependencies {
   val jacksonCore: ModuleID =        "com.fasterxml.jackson.core" % "jackson-core"        % jacksonV
   val jacksonScalaModule: ModuleID = "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.6"
 
-  val logbackClassic: ModuleID = "ch.qos.logback"             %  "logback-classic" % "1.2.3"
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
   val scalaLogging: ModuleID =   "com.typesafe.scala-logging" %% "scala-logging"   % scalaLoggingV
-  val swaggerUi: ModuleID =      "org.webjars"                %  "swagger-ui"      % "2.2.5"
   val ficus: ModuleID =          "com.iheart"                 %% "ficus"           % "1.4.3"
   val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
-  val httpClient: ModuleID =     "org.apache.httpcomponents"  %  "httpclient"       % "4.5.5"  // upgrading a transitive dependency to avoid security warnings
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
-  val unfilteredFilter = "ws.unfiltered" %% "unfiltered-filter" % "0.9.1"
   val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
@@ -45,7 +41,6 @@ object Dependencies {
 
   val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
 
-  val googleRpc: ModuleID = "io.grpc" % "grpc-core" % "1.12.0"
   val googleOAuth2: ModuleID = "com.google.auth" % "google-auth-library-oauth2-http" % "0.9.1"
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
 
@@ -76,16 +71,12 @@ object Dependencies {
     jacksonCore,
     jacksonScalaModule,
 
-    logbackClassic, //
     ravenLogback,
     scalaLogging,
-    swaggerUi, //
     ficus,
     cats,
-    httpClient,//
     enumeratum,
 
-    unfilteredFilter,//
     javaxServlet,
 
     googleEndpointsFramework,
@@ -95,7 +86,6 @@ object Dependencies {
 
     googleAppEngine,
 
-    googleRpc,//
     googleOAuth2,
     googleSourceRepositories,
 
