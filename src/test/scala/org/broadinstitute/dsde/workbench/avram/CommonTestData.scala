@@ -14,6 +14,9 @@ import scala.concurrent.ExecutionContext
 
 trait CommonTestData { this: ScalaFutures =>
 
+  val config = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
+  val googleConfig = config.getConfig("google")
+
   //val entity1 = ...
 
 }

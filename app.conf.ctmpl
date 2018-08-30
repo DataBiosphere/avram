@@ -1,0 +1,12 @@
+{{with $environment := env "ENVIRONMENT"}}
+{{with $client := vault (printf "secret/dsde/avram/%s/oauth_client" $environment)}}
+{{with $googleProject := env "GOOGLE_PROJ"}}
+{{with $serviceVersion := env "SERVICE_VERSION"}}
+
+google {
+    service-version = "{{$serviceVersion}}"
+    client-id = "{{$client.Data.id}}"
+    google-project = "{{$googleProject}}"
+}
+
+{{end}}{{end}}{{end}}{{end}}
