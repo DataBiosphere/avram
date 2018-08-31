@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# The CloudSQL console simply states "PostgreSQL 5.6" so we may not match the minor version number
+# The CloudSQL console simply states "PostgreSQL 9.6" so we may not match the minor version number
 POSTGRES_VERSION=9.6
 start() {
     echo "attempting to remove old $CONTAINER container..."
