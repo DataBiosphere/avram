@@ -2,7 +2,9 @@ package org.broadinstitute.dsde.workbench.avram.api
 
 import com.google.api.server.spi.config.{Api, ApiMethod}
 import java.util.logging.Logger
-
+import net.ceedubs.ficus.Ficus._
+import com.typesafe.config.ConfigFactory
+import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import org.broadinstitute.dsde.workbench.avram.util.DataSource
 
 import scala.concurrent.duration.Duration
@@ -20,6 +22,10 @@ case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int,
 class AvramRoutes {
 
   private val log = Logger.getLogger(getClass.getName)
+  val configFactory = ConfigFactory.parseResources("app.conf") //s.withFallback(ConfigFactory.load())
+  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
+  val dataSource = new DataSource(dbcpDataSourceConfig)
+
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
@@ -37,14 +43,14 @@ class AvramRoutes {
   @ApiMethod(name = "dbPoolStats", httpMethod = "get", path = "dbPoolStats")
   def dbPoolStats: DbPoolStats = {
     val result = for {
-      totalConnections <- DataSource.database.run(
+      totalConnections <-  dataSource.database.run(
         sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int])
-    } yield DbPoolStats(DataSource.ds.getNumActive, DataSource.ds.getNumIdle, totalConnections.head)
+    } yield DbPoolStats(dataSource.ds.getNumActive, dataSource.ds.getNumIdle, totalConnections.head)
     Await.result(result, Duration.Inf)
   }
 
   private def fetchTimestampFromDBWithSlick(): String = {
-    val now = Await.result(DataSource.database.run(sql"select now()".as[String]), Duration.Inf)
+    val now = Await.result(dataSource.database.run(sql"select now()".as[String]), Duration.Inf)
     now.head
   }
 }

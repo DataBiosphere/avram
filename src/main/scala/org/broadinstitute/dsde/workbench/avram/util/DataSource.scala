@@ -1,19 +1,18 @@
 package org.broadinstitute.dsde.workbench.avram.util
 
-import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.commons.dbcp2.BasicDataSource
+import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import slick.jdbc.PostgresProfile.api._
 
-object DataSource {
-  private val config = ConfigFactory.load().getConfig("dbcpDataSource")
 
+class DataSource(val config: DbcpDataSourceConfig) {
   // See https://commons.apache.org/proper/commons-dbcp/configuration.html for configuration options and defaults
   val ds = new BasicDataSource()
-  ds.setDriverClassName(config.getString("driverClassName"))
-  ds.setUrl(config.getString("url"))
-  ds.setUsername(config.getString("username"))
-  ds.setPassword(config.getString("password"))
-  ds.setMaxTotal(config.getInt("maxTotal"))
+  ds.setDriverClassName(config.driverClassName)
+  ds.setUrl(config.url)
+  ds.setUsername(config.username)
+  ds.setPassword(config.password)
+  ds.setMaxTotal(config.maxTotal)
 
-  val database = Database.forDataSource(ds, Option(ds.getMaxTotal), AsyncExecutor("Avram Executor", config.getInt("slick.numThreads"), config.getInt("slick.queueSize")))
+  val database = Database.forDataSource(ds, Option(ds.getMaxTotal), AsyncExecutor("Avram Executor", config.slickNumThreads, config.slickQueueSize))
 }
