@@ -9,6 +9,8 @@ object Dependencies {
   val postgresDriverV = "42.2.4"
   val socketFactoryV  = "1.0.10"
   val dbcpV           = "2.5.0"
+  val sttpV           = "1.3.1"
+  val circeVersion    = "0.9.3"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -68,6 +70,14 @@ object Dependencies {
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
 
+  val sttp: ModuleID = "com.softwaremill.sttp" %% "core" % sttpV
+
+  val circe: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser"
+  ).map(_ % circeVersion)
+
   val rootDependencies = Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
@@ -83,6 +93,7 @@ object Dependencies {
     enumeratum,
 
     javaxServlet,
+    sttp,
 
     googleEndpointsFramework,
     googleEndpointsManagementControl,
@@ -108,5 +119,5 @@ object Dependencies {
     workbenchGoogleTests,
     workbenchMetrics,
     sam
-  )
+  ) ++ circe
 }
