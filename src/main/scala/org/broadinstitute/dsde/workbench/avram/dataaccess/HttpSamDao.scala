@@ -15,7 +15,6 @@ class HttpSamDao extends SamDao with RestClient {
   val samUrl = "https://sam.dsde-dev.broadinstitute.org"
 
   override def getUserStatus(token: String): Either[ErrorResponse, UserInfo] = {
-    log.info("getUserStatus")
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v1?userDetailsOnly=true", token)
     val response: Id[Response[String]] = request.send()
     response.body match {

@@ -14,9 +14,7 @@ trait RestClient {
   implicit val sttpBackend = HttpURLConnectionBackend()
 
   def buildAuthenticatedGetRequest(url: String, path: String, token: String): Request[String, Nothing] = {
-    val uri = buildUri(url, path)
-    log.info(uri.toString())
-    sttp.auth.bearer(token).get(uri)
+    sttp.auth.bearer(token).get(buildUri(url, path))
   }
 
   def buildUri(url: String, path: String): Uri = {

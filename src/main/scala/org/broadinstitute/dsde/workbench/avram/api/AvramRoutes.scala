@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
+import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, UserInfo}
 import org.broadinstitute.dsde.workbench.avram.util.DataSourceFactory
 import org.broadinstitute.dsde.workbench.avram.util.{DataSource, ErrorResponse}
 import org.broadinstitute.dsde.workbench.avram.{HttpSamDao, UserInfo}
