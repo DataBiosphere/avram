@@ -1,7 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram
 
 import java.util.concurrent.{ExecutorService, Executors}
-
 import scala.concurrent.ExecutionContextExecutor
 
 

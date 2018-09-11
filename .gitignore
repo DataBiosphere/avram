@@ -2,6 +2,7 @@
 /project/boot/
 /project/plugins/project
 target/
+src/main/resources/app.conf
 lib_managed/
 src_managed/
 test-output/

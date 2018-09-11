@@ -1,5 +1,5 @@
 {{with $environment := env "ENVIRONMENT"}}
-{{with $dataSource := vault (printf "secret/dsde/avram/%s/dbcDataSource" $environment)}}
+{{with $dataSource := vault (printf "secret/dsde/avram/%s/dataSource" $environment)}}
 {{with $googleProject := env "GOOGLE_PROJ"}}
 {{with $serviceVersion := env "SERVICE_VERSION"}}
 
@@ -12,10 +12,8 @@ dbcpDataSource = {
   username = "{{$dataSource.Data.username}}"
   password = "{{$dataSource.Data.password}}"
   maxTotal = 20 // http://slick.lightbend.com/doc/3.2.3/database.html
-  slick = {
-    numThreads = 10 // https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
-    queueSize = 1000 // default, but must be provided when explicitly setting numThreads
-  }
+  slickNumThreads = 10 // https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+  slickQueueSize = 1000 // default, but must be provided when explicitly setting numThreads
 }
 
 {{end}}{{end}}{{end}}{{end}}

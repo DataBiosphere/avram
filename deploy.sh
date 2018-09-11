@@ -36,7 +36,7 @@ docker run -v $PWD:/app \
     -e GOOGLE_PROJ=$GOOGLE_PROJECT \
     -e SERVICE_VERSION=1 \
     -e INPUT_PATH=/app \
-    -e OUT_PATH=/app/config \
+    -e OUT_PATH=/app/src/main/resources \
     -e VAULT_TOKEN=$VAULT_TOKEN \
     -e ENVIRONMENT=$ENVIRONMENT \
     broadinstitute/dsde-toolbox render-templates.sh

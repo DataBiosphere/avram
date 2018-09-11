@@ -1,18 +1,20 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import java.util.logging.Logger
-import net.ceedubs.ficus.Ficus._
 import com.typesafe.config.ConfigFactory
-import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
-import org.broadinstitute.dsde.workbench.avram.util.DataSource
+import java.util.logging.Logger
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import slick.jdbc.PostgresProfile.api._
+import net.ceedubs.ficus.Ficus._
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
+import org.broadinstitute.dsde.workbench.avram.util.DataSourceFactory
 
 import scala.beans.BeanProperty
+import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import slick.jdbc.PostgresProfile.api._
+
 
 case class Pong()
 case class Now(@BeanProperty message: String)
@@ -22,9 +24,10 @@ case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int,
 class AvramRoutes {
 
   private val log = Logger.getLogger(getClass.getName)
-  val configFactory = ConfigFactory.parseResources("app.conf") //s.withFallback(ConfigFactory.load())
+
+  val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
   private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
-  val dataSource = new DataSource(dbcpDataSourceConfig)
+  val dataSource = new DataSourceFactory(dbcpDataSourceConfig)
 
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
