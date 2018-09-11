@@ -8,7 +8,7 @@
 // Note: this is _not_ appropriate for passing to a slick Database factory method
 dbcpDataSource = {
   driverClassName = org.postgresql.Driver
-  url = "{{$dataSource.Data.url}}"
+  url = "jdbc:postgresql://google/avram?ssl=false&socketFactoryArg=broad-avram-dev:us-central1:avram&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
   username = "{{$dataSource.Data.username}}"
   password = "{{$dataSource.Data.password}}"
   maxTotal = 20 // http://slick.lightbend.com/doc/3.2.3/database.html
