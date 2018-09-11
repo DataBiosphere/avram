@@ -32,6 +32,15 @@ docker run \
     ansingh7115/avram /bin/bash -c \
     "cd /app; gcloud auth activate-service-account --key-file=deploy_account.json && gcloud endpoints services deploy /app/openapi.yaml --project=$GOOGLE_PROJECT"
 
+docker run -v $PWD:/app \
+    -e GOOGLE_PROJ=$GOOGLE_PROJECT \
+    -e SERVICE_VERSION=1 \
+    -e INPUT_PATH=/app \
+    -e OUT_PATH=/app/src/main/resources \
+    -e VAULT_TOKEN=$VAULT_TOKEN \
+    -e ENVIRONMENT=$ENVIRONMENT \
+    broadinstitute/dsde-toolbox render-templates.sh
+
 # build app engine app
 docker run \
     -v $PWD:/app \

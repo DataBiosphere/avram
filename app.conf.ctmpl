@@ -1,0 +1,19 @@
+{{with $environment := env "ENVIRONMENT"}}
+{{with $dataSource := vault (printf "secret/dsde/avram/%s/dataSource" $environment)}}
+{{with $googleProject := env "GOOGLE_PROJ"}}
+{{with $serviceVersion := env "SERVICE_VERSION"}}
+
+// Properties for configuring an Apache DBCP BasicDataSource
+// along with properties for use with a slick Database
+// Note: this is _not_ appropriate for passing to a slick Database factory method
+dbcpDataSource = {
+  driverClassName = org.postgresql.Driver
+  url = "jdbc:postgresql://google/avram?ssl=false&socketFactoryArg=broad-avram-dev:us-central1:avram&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+  username = "{{$dataSource.Data.username}}"
+  password = "{{$dataSource.Data.password}}"
+  maxTotal = 20 // http://slick.lightbend.com/doc/3.2.3/database.html
+  slickNumThreads = 10 // https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+  slickQueueSize = 1000 // default, but must be provided when explicitly setting numThreads
+}
+
+{{end}}{{end}}{{end}}{{end}}
