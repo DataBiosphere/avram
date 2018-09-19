@@ -11,7 +11,7 @@ import com.softwaremill.sttp.{HttpURLConnectionBackend, Request, Uri, sttp}
 trait RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  implicit val sttpBackend = HttpURLConnectionBackend()
+  implicit val sttpBackend = HttpURLConnectionBackend() // TODO: consider refactoring to allow use of SttpBackendStub in tests
 
   def buildAuthenticatedGetRequest(url: String, path: String, token: String): Request[String, Nothing] = {
     sttp.auth.bearer(token).get(buildUri(url, path))

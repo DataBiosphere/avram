@@ -50,8 +50,9 @@ object Dependencies {
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
 
 
-  val scalaTest: ModuleID = "org.scalatest" %% "scalatest"    % scalaTestV % "test"
-  val mockito: ModuleID =   "org.mockito"    % "mockito-core" % "2.18.3"   % "test"
+  val scalaTest: ModuleID =  "org.scalatest"  %% "scalatest"        % scalaTestV % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
   // workbench-google pulls in workbench-{util, model, metrics} and workbench-metrics pulls in workbench-util.
@@ -66,6 +67,7 @@ object Dependencies {
   val slick: ModuleID =     "com.typesafe.slick" %% "slick"                 % slickV
   val dbcp2: ModuleID = "org.apache.commons" % "commons-dbcp2" % dbcpV
   val liquibase: ModuleID = "org.liquibase"       % "liquibase-core"        % "3.5.3"
+  val slickHikariCP: ModuleID = "com.typesafe.slick" %% "slick-hikaricp"  % slickV
 
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
@@ -106,8 +108,10 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockServer,
 
     slick,
+    slickHikariCP,
     postgresDriver,
     socketFactory,
     dbcp2,

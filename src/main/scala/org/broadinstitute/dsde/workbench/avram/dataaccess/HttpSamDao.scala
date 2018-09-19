@@ -9,13 +9,11 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import org.broadinstitute.dsde.workbench.avram.util.{ErrorResponse, RestClient}
 
-class HttpSamDao extends SamDao with RestClient {
+class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
-  // TODO: read from config
-  val samUrl = "https://sam.dsde-dev.broadinstitute.org"
 
-  override def getUserStatus(token: String): Either[ErrorResponse, UserInfo] = {
-    val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v1?userDetailsOnly=true", token)
+  override def getUserStatus(token: String): Either[ErrorResponse, SamUserInfoResponse] = {
+    val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
     val response: Id[Response[String]] = request.send()
     response.body match {
       case Left(error: String) => Left(ErrorResponse(response.code, error))
@@ -23,10 +21,10 @@ class HttpSamDao extends SamDao with RestClient {
         parse(content) match {
           case Left(error: ParsingFailure) => Left(ErrorResponse(500, error.message))
           case Right(json: Json) =>
-            val value: Result[UserInfo] = json.hcursor.get[UserInfo]("userInfo")
-            value match {
+            val result: Result[SamUserInfoResponse] = json.as[SamUserInfoResponse]
+            result match {
               case Left(error: DecodingFailure) => Left(ErrorResponse(500, error.message))
-              case Right(userInfo: UserInfo) => Right(userInfo)
+              case Right(userInfo: SamUserInfoResponse) => Right(userInfo)
             }
         }
     }

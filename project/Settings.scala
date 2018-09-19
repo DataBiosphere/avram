@@ -42,8 +42,9 @@ object Settings {
       organization  := "org.broadinstitute.dsde.workbench",
       scalaVersion  := "2.12.6",
       resolvers ++= commonResolvers,
-      scalacOptions ++= commonCompilerSettings,
-      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
+      scalacOptions ++= commonCompilerSettings
+      // Add macro paradise here if we need it for circe semi-auto derivation
+      // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
     )
 
   //the full list of settings for the root project that's ultimately the one we build into a fat JAR and run
