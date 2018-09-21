@@ -1,19 +1,15 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
-import com.google.api.server.spi.config.{Api, ApiMethod}
-import com.typesafe.config.ConfigFactory
 import java.util.logging.Logger
 
-import net.ceedubs.ficus.Ficus._
-import net.ceedubs.ficus.readers.ArbitraryTypeReader._
-import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
-import org.broadinstitute.dsde.workbench.avram.util.DataSourceFactory
+import com.google.api.server.spi.config.{Api, ApiMethod}
+import org.broadinstitute.dsde.workbench.avram.Avram
+import slick.jdbc.PostgresProfile.api._
 
 import scala.beans.BeanProperty
-import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import slick.jdbc.PostgresProfile.api._
 
 
 case class Pong()
@@ -25,10 +21,7 @@ class AvramRoutes {
 
   private val log = Logger.getLogger(getClass.getName)
 
-  val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
-  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
-  val dataSource = new DataSourceFactory(dbcpDataSourceConfig)
-
+  private val database = Avram.database
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
@@ -45,15 +38,16 @@ class AvramRoutes {
   // TODO: move/merge this endpoint into a status API
   @ApiMethod(name = "dbPoolStats", httpMethod = "get", path = "dbPoolStats")
   def dbPoolStats: DbPoolStats = {
+    val dataSource = Avram.dbcpDataSource
     val result = for {
-      totalConnections <-  dataSource.database.run(
+      totalConnections <- database.run(
         sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int])
-    } yield DbPoolStats(dataSource.ds.getNumActive, dataSource.ds.getNumIdle, totalConnections.head)
+    } yield DbPoolStats(dataSource.getNumActive, dataSource.getNumIdle, totalConnections.head)
     Await.result(result, Duration.Inf)
   }
 
   private def fetchTimestampFromDBWithSlick(): String = {
-    val now = Await.result(dataSource.database.run(sql"select now()".as[String]), Duration.Inf)
+    val now = Await.result(database.run(sql"select now()".as[String]), Duration.Inf)
     now.head
   }
 }
