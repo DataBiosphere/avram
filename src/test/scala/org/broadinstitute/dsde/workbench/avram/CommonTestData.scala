@@ -2,6 +2,10 @@ package org.broadinstitute.dsde.workbench.avram
 
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
+import net.ceedubs.ficus.Ficus._
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import org.broadinstitute.dsde.workbench.avram.db.DbReference
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Values common to multiple tests, to reduce boilerplate.
@@ -26,6 +30,9 @@ object CommonTestData {
   )
 
   val localDatabase = new SlickDatabaseFactory(localDataSourceConfig).database
+  val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
+  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
+  val dataSource = new DbReference(dbcpDataSourceConfig)
 
   //val entity1 = ...
 

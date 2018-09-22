@@ -1,4 +1,4 @@
-package org.broadinstitute.dsde.workbench.avram.integration
+package org.broadinstitute.dsde.workbench.avram.db
 
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.scalatest.FreeSpec
