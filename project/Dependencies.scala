@@ -50,8 +50,9 @@ object Dependencies {
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
 
 
-  val scalaTest: ModuleID = "org.scalatest" %% "scalatest"    % scalaTestV % "test"
-  val mockito: ModuleID =   "org.mockito"    % "mockito-core" % "2.18.3"   % "test"
+  val scalaTest: ModuleID =  "org.scalatest"   %% "scalatest"       % scalaTestV % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
   // workbench-google pulls in workbench-{util, model, metrics} and workbench-metrics pulls in workbench-util.
@@ -106,6 +107,7 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockServer,
 
     slick,
     postgresDriver,
