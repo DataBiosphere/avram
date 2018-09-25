@@ -11,4 +11,5 @@ object AvramConfig {
   private val configFactory: Config = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
 
   val dbcpDataSourceConfig: DbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
+  val sam: SamConfig = configFactory.as[SamConfig]("sam")
 }

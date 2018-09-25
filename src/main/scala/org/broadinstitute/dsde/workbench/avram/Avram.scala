@@ -2,6 +2,7 @@ package org.broadinstitute.dsde.workbench.avram
 
 import org.apache.commons.dbcp2.BasicDataSource
 import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
+import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
 
 /**
@@ -34,6 +35,7 @@ object Avram {
   private val databaseFactory = new SlickDatabaseFactory(AvramConfig.dbcpDataSourceConfig)
 
   val database = databaseFactory.database
+  val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 
   /**
     * DBCP data source provided only for introspection into the database pool statistics. If you're
