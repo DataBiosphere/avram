@@ -27,7 +27,8 @@ object Settings {
     "-feature",
     "-encoding", "utf8",
     "-target:jvm-1.8",
-    "-language:postfixOps"
+    "-language:postfixOps",
+    "-Ypartial-unification"
   )
 
   //sbt assembly settings

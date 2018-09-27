@@ -9,8 +9,11 @@ object Dependencies {
   val postgresDriverV = "42.2.4"
   val socketFactoryV  = "1.0.10"
   val dbcpV           = "2.5.0"
-  val sttpV           = "1.3.1"
+  val sttpV           = "1.3.5"
   val circeVersion    = "0.9.3"
+  val catsV           = "1.4.0"
+  val catsEffectV     = "1.0.0"
+  val mouseV          = "0.18"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -34,8 +37,11 @@ object Dependencies {
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
   val scalaLogging: ModuleID =   "com.typesafe.scala-logging" %% "scala-logging"   % scalaLoggingV
   val ficus: ModuleID =          "com.iheart"                 %% "ficus"           % "1.4.3"
-  val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
+
+  val catsCore: ModuleID =       "org.typelevel" %% "cats-core"   % catsV
+  val catsEffect: ModuleID =     "org.typelevel" %% "cats-effect" % catsEffectV
+  val mouse: ModuleID =          "org.typelevel" %% "mouse"       % mouseV
 
   val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
 
@@ -72,6 +78,7 @@ object Dependencies {
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
 
   val sttp: ModuleID = "com.softwaremill.sttp" %% "core" % sttpV
+  val sttpCats: ModuleID = "com.softwaremill.sttp" %% "async-http-client-backend-cats" % sttpV
 
   val circe: Seq[ModuleID] = Seq(
     "io.circe" %% "circe-core",
@@ -90,11 +97,14 @@ object Dependencies {
     ravenLogback,
     scalaLogging,
     ficus,
-    cats,
+    catsCore,
+    catsEffect,
+    mouse,
     enumeratum,
 
     javaxServlet,
     sttp,
+    sttpCats,
 
     googleEndpointsFramework,
     googleEndpointsManagementControl,

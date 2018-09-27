@@ -9,7 +9,7 @@ Revolver.settings
 
 Revolver.enableDebugging(port = 5051, suspend = false)
 
-enablePlugins(AppenginePlugin)
+//enablePlugins(AppenginePlugin)
 javaOptions in appengineDevServer in Compile -= (javaOptions in appengineDevServer in Compile).value.find(_.matches("-javaagent:.*"))
 javaOptions in appengineDevServer in Compile ++= Seq(
   "-Duse_jetty9_runtime=true",

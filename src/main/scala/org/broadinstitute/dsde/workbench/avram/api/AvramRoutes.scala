@@ -1,16 +1,16 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import java.util.logging.Logger
-
+import mouse.all._
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import org.broadinstitute.dsde.workbench.avram.Avram
+import javax.servlet.http.HttpServletRequest
+import org.broadinstitute.dsde.workbench.avram._
+import org.broadinstitute.dsde.workbench.avram.AvramResult
+import org.broadinstitute.dsde.workbench.avram.util.AvramException
+import slick.dbio.{DBIOAction, NoStream}
 import slick.jdbc.PostgresProfile.api._
 
 import scala.beans.BeanProperty
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
-
 
 case class Pong()
 case class Now(@BeanProperty message: String)
@@ -21,33 +21,57 @@ class AvramRoutes {
 
   private val log = Logger.getLogger(getClass.getName)
 
-  private val database = Avram.database
-
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
     Pong()
   }
 
+  @ApiMethod(name = "authPing", httpMethod = "get", path = "authPing")
+  def authPing(r: HttpServletRequest): Pong = {
+    val transformed = for {
+      token <- getToken(r)  |> eitherToResult
+      samDao <- withDependencies(_.samDAO)
+      userInfo <- samDao.getUserStatus(token)
+    } yield {
+      log.info(userInfo.userEmail)
+      log.info(userInfo.userSubjectId)
+      Pong()
+    }
+
+    unsafeRun(transformed)
+  }
+
+  // TODO make more robust
+  private def getToken(req: HttpServletRequest): Either[AvramException, String] = {
+    Option(req.getHeader("Authorization")) map {
+      _.stripPrefix("Bearer ")
+    } toRight(AvramException(401, "Could not obtain bearer token"))
+  }
+
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
   @ApiMethod(name = "now", httpMethod = "get", path = "now")
   def now: Now = {
-    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
-    Now(Await.result(Future(fetchTimestampFromDBWithSlick()), Duration.Inf))
+    val transformed = for {
+      now <- runQuery(sql"select now()".as[String])
+    } yield Now(now.head)
+
+    unsafeRun(transformed)
   }
 
   // TODO: move/merge this endpoint into a status API
   @ApiMethod(name = "dbPoolStats", httpMethod = "get", path = "dbPoolStats")
   def dbPoolStats: DbPoolStats = {
-    val dataSource = Avram.dbcpDataSource
-    val result = for {
-      totalConnections <- database.run(
-        sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int])
-    } yield DbPoolStats(dataSource.getNumActive, dataSource.getNumIdle, totalConnections.head)
-    Await.result(result, Duration.Inf)
+    val transformed = for {
+      totalConnections <- runQuery(sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int])
+      numActive <- withDependencies(_.dataSource.getNumActive)
+      numIdle   <- withDependencies(_.dataSource.getNumIdle)
+    } yield DbPoolStats(numActive, numIdle, totalConnections.head)
+
+    unsafeRun(transformed)
   }
 
-  private def fetchTimestampFromDBWithSlick(): String = {
-    val now = Await.result(database.run(sql"select now()".as[String]), Duration.Inf)
-    now.head
+  // TODO move to DB layer
+  private def runQuery[A](a: DBIOAction[A, NoStream, Nothing]): AvramResult[A] = {
+    withDependenciesIO(deps => futureToIO(deps.database.run(a)))
   }
 }

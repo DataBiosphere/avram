@@ -2,7 +2,6 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import io.circe.generic.auto._
 import io.circe.syntax._
-import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.Header
 import org.mockserver.model.HttpRequest._
