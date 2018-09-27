@@ -2,7 +2,9 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import java.util.logging.Logger
 
-import com.softwaremill.sttp._
+import cats._
+import cats.implicits._
+import com.softwaremill.sttp.{Id, _}
 import io.circe.Decoder.Result
 import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
@@ -14,7 +16,19 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
 
   override def getUserStatus(token: String): Either[ErrorResponse, SamUserInfoResponse] = {
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
-    val response: Id[Response[String]] = request.send()
+    for {
+      response <- request.send()
+      content <- response.body                 leftMap responseToErrorResponse(response)
+      json <- parse(content)                   leftMap circeErrorToErrorResponse
+      userInfo <- json.as[SamUserInfoResponse] leftMap circeErrorToErrorResponse
+    } yield userInfo
+  }
+
+  private def responseToErrorResponse(response: Response[String]): String => ErrorResponse = error => ErrorResponse(response.code, error)
+  private def circeErrorToErrorResponse(e: io.circe.Error): ErrorResponse = ErrorResponse(500, e.getMessage)
+
+  // For the sake of comparison, this is what getUserStatus used to look like
+  private def longhandResponseToEitherErrorOrUserInfo(response: Id[Response[String]]): Either[ErrorResponse, SamUserInfoResponse] = {
     response.body match {
       case Left(error: String) => Left(ErrorResponse(response.code, error))
       case Right(content: String) =>

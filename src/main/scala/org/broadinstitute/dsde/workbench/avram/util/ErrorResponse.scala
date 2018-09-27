@@ -19,7 +19,6 @@ case class ErrorResponse(statusCode: Int, message: String) {
     * Create a Google Cloud Endpoints Framework exception matching the status code.
     */
   def exception: Exception = {
-    log.info(message)
     statusCode match {
       case 400 => new BadRequestException(message)
       case 401 => new UnauthorizedException(message)
@@ -29,7 +28,7 @@ case class ErrorResponse(statusCode: Int, message: String) {
       case 500 => new InternalServerErrorException(message)
       case 503 => new ServiceUnavailableException(message)
       case _ =>
-        log.info(s"Unexpected status code: $statusCode. Using 500: $message")
+        log.warning(s"Unexpected status code: $statusCode. Using 500: $message")
         new InternalServerErrorException(message)
     }
   }

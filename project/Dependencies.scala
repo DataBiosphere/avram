@@ -79,7 +79,7 @@ object Dependencies {
     "io.circe" %% "circe-parser"
   ).map(_ % circeVersion)
 
-  val rootDependencies = Seq(
+  val rootDependencies = circe ++ Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
     jacksonAnnotations,
@@ -121,5 +121,5 @@ object Dependencies {
     workbenchGoogleTests,
     workbenchMetrics,
     sam
-  ) ++ circe
+  )
 }
