@@ -29,7 +29,7 @@ class AvramRoutes {
   @ApiMethod(name = "authPing", httpMethod = "get", path = "authPing")
   def authPing(r: HttpServletRequest): Pong = {
     val transformed = for {
-      token <- getToken(r)  |> eitherToResult
+      token <- getToken(r)  |> eitherToResult[AvramException, String]
       samDao <- withDependencies(_.samDAO)
       userInfo <- samDao.getUserStatus(token)
     } yield {

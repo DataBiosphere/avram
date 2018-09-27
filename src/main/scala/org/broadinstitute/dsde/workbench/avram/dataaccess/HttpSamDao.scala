@@ -4,6 +4,7 @@ import java.util.logging.Logger
 
 import mouse.all._
 import cats.implicits._
+import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
 import org.broadinstitute.dsde.workbench.avram._
@@ -17,9 +18,9 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     for {
       response <- request.send()                        |> ioToResult
       content  <- response.body.leftMap(msg =>
-                    AvramException(response.code, msg)) |> eitherToResult
-      json     <- parse(content)                        |> eitherToResult
-      userInfo <- json.as[SamUserInfoResponse]          |> eitherToResult
+                    AvramException(response.code, msg)) |> eitherToResult[AvramException, String]
+      json     <- parse(content)                        |> eitherToResult[ParsingFailure, Json]
+      userInfo <- json.as[SamUserInfoResponse]          |> eitherToResult[DecodingFailure, SamUserInfoResponse]
     } yield userInfo
   }
 }
