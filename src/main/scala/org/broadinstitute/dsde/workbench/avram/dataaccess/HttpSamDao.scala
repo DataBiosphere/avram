@@ -2,31 +2,25 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import java.util.logging.Logger
 
-import com.softwaremill.sttp._
-import io.circe.Decoder.Result
+import mouse.all._
+import cats.implicits._
 import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
-import org.broadinstitute.dsde.workbench.avram.util.{ErrorResponse, RestClient}
+import org.broadinstitute.dsde.workbench.avram.util.transformers._
+import org.broadinstitute.dsde.workbench.avram.util.{AvramError, RestClient}
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  override def getUserStatus(token: String): Either[ErrorResponse, SamUserInfoResponse] = {
+  override def getUserStatus(token: String): AvramResult[SamUserInfoResponse] = {
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
-    val response: Id[Response[String]] = request.send()
-    response.body match {
-      case Left(error: String) => Left(ErrorResponse(response.code, error))
-      case Right(content: String) =>
-        parse(content) match {
-          case Left(error: ParsingFailure) => Left(ErrorResponse(500, error.message))
-          case Right(json: Json) =>
-            val result: Result[SamUserInfoResponse] = json.as[SamUserInfoResponse]
-            result match {
-              case Left(error: DecodingFailure) => Left(ErrorResponse(500, error.message))
-              case Right(userInfo: SamUserInfoResponse) => Right(userInfo)
-            }
-        }
-    }
+    for {
+      response <- request.send()                        |> ioToResult
+      content  <- response.body.leftMap(msg =>
+                    AvramError(response.code, msg))     |> eitherToResult[AvramError, String]
+      json     <- parse(content)                        |> eitherToResult[ParsingFailure, Json]
+      userInfo <- json.as[SamUserInfoResponse]          |> eitherToResult[DecodingFailure, SamUserInfoResponse]
+    } yield userInfo
   }
 }

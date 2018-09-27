@@ -27,7 +27,9 @@ object Settings {
     "-feature",
     "-encoding", "utf8",
     "-target:jvm-1.8",
-    "-language:postfixOps"
+    "-language:postfixOps",
+    "-Ypartial-unification",
+    "-language:higherKinds"
   )
 
   //sbt assembly settings
@@ -54,6 +56,5 @@ object Settings {
     //the version is applied in rootVersionSettings and is set to 0.1-githash.
     //we don't really use it for anything but we might when we publish our model
   ) ++ commonAssemblySettings ++ rootVersionSettings
-
 
 }
