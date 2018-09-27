@@ -7,8 +7,8 @@ import cats.implicits._
 import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
-import org.broadinstitute.dsde.workbench.avram._
-import org.broadinstitute.dsde.workbench.avram.util.{AvramException, RestClient}
+import org.broadinstitute.dsde.workbench.avram.util.transformers._
+import org.broadinstitute.dsde.workbench.avram.util.{AvramError, RestClient}
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
@@ -18,7 +18,7 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     for {
       response <- request.send()                        |> ioToResult
       content  <- response.body.leftMap(msg =>
-                    AvramException(response.code, msg)) |> eitherToResult[AvramException, String]
+                    AvramError(response.code, msg))     |> eitherToResult[AvramError, String]
       json     <- parse(content)                        |> eitherToResult[ParsingFailure, Json]
       userInfo <- json.as[SamUserInfoResponse]          |> eitherToResult[DecodingFailure, SamUserInfoResponse]
     } yield userInfo

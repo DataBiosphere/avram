@@ -1,6 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
-import org.broadinstitute.dsde.workbench.avram.AvramResult
+import org.broadinstitute.dsde.workbench.avram.util.transformers.AvramResult
 
 trait SamDao {
   def getUserStatus(token: String): AvramResult[SamUserInfoResponse]

@@ -1,12 +1,13 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import java.util.logging.Logger
+
 import mouse.all._
 import com.google.api.server.spi.config.{Api, ApiMethod}
 import javax.servlet.http.HttpServletRequest
-import org.broadinstitute.dsde.workbench.avram._
-import org.broadinstitute.dsde.workbench.avram.AvramResult
-import org.broadinstitute.dsde.workbench.avram.util.AvramException
+import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
+import org.broadinstitute.dsde.workbench.avram.util.transformers._
+import org.broadinstitute.dsde.workbench.avram.util.AvramError
 import slick.dbio.{DBIOAction, NoStream}
 import slick.jdbc.PostgresProfile.api._
 
@@ -29,9 +30,7 @@ class AvramRoutes {
   @ApiMethod(name = "authPing", httpMethod = "get", path = "authPing")
   def authPing(r: HttpServletRequest): Pong = {
     val transformed = for {
-      token <- getToken(r)  |> eitherToResult[AvramException, String]
-      samDao <- withDependencies(_.samDAO)
-      userInfo <- samDao.getUserStatus(token)
+      userInfo <- extractUserInfo(r)
     } yield {
       log.info(userInfo.userEmail)
       log.info(userInfo.userSubjectId)
@@ -39,13 +38,6 @@ class AvramRoutes {
     }
 
     unsafeRun(transformed)
-  }
-
-  // TODO make more robust
-  private def getToken(req: HttpServletRequest): Either[AvramException, String] = {
-    Option(req.getHeader("Authorization")) map {
-      _.stripPrefix("Bearer ")
-    } toRight(AvramException(401, "Could not obtain bearer token"))
   }
 
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
@@ -73,5 +65,20 @@ class AvramRoutes {
   // TODO move to DB layer
   private def runQuery[A](a: DBIOAction[A, NoStream, Nothing]): AvramResult[A] = {
     withDependenciesIO(deps => futureToIO(deps.database.run(a)))
+  }
+
+  // TODO make more robust
+  private def getToken(req: HttpServletRequest): Either[AvramError, String] = {
+    Option(req.getHeader("Authorization")) map {
+      _.stripPrefix("Bearer ")
+    } toRight(AvramError(401, "Could not obtain bearer token from request"))
+  }
+
+  private def extractUserInfo(r: HttpServletRequest): AvramResult[SamUserInfoResponse] = {
+    for {
+      token <- getToken(r) |> eitherToResult[AvramError, String]
+      samDao <- withDependencies(_.samDAO)
+      userInfo <- samDao.getUserStatus(token)
+    } yield userInfo
   }
 }
