@@ -46,8 +46,8 @@ object transformers {
   }
 
   // AAAAHHHH
-  def unsafeRun[A](result: AvramResult[A]): A = {
-    result.value.run(Global.dependencies).unsafeRunSync().fold(error => throw error.toServiceException, identity)
+  def unsafeRun[A](result: AvramResult[A], deps: AvramDependencies = Global.dependencies): A = {
+    result.value.run(deps).unsafeRunSync().fold(error => throw error.toServiceException, identity)
   }
 
 }
