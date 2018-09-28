@@ -9,6 +9,8 @@ object Dependencies {
   val postgresDriverV = "42.2.4"
   val socketFactoryV  = "1.0.10"
   val dbcpV           = "2.5.0"
+  val sttpV           = "1.3.1"
+  val circeVersion    = "0.9.3"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -48,8 +50,9 @@ object Dependencies {
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
 
 
-  val scalaTest: ModuleID = "org.scalatest" %% "scalatest"    % scalaTestV % "test"
-  val mockito: ModuleID =   "org.mockito"    % "mockito-core" % "2.18.3"   % "test"
+  val scalaTest: ModuleID =  "org.scalatest"   %% "scalatest"       % scalaTestV % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
   // workbench-google pulls in workbench-{util, model, metrics} and workbench-metrics pulls in workbench-util.
@@ -68,7 +71,15 @@ object Dependencies {
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
 
-  val rootDependencies = Seq(
+  val sttp: ModuleID = "com.softwaremill.sttp" %% "core" % sttpV
+
+  val circe: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser"
+  ).map(_ % circeVersion)
+
+  val rootDependencies = circe ++ Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
     jacksonAnnotations,
@@ -83,6 +94,7 @@ object Dependencies {
     enumeratum,
 
     javaxServlet,
+    sttp,
 
     googleEndpointsFramework,
     googleEndpointsManagementControl,
@@ -95,6 +107,7 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockServer,
 
     slick,
     postgresDriver,
