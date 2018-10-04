@@ -3,7 +3,6 @@ package org.broadinstitute.dsde.workbench.avram.api
 import java.util.logging.Logger
 
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import com.google.api.server.spi.response.UnauthorizedException
 import javax.servlet.http.HttpServletRequest
 import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
@@ -15,13 +14,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-
 case class Pong()
 case class Now(@BeanProperty message: String)
 case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)
 
+/**
+  * Illustration of business logic living outside of the endpoint class.
+  */
+object PongService {
+  private val log = Logger.getLogger(getClass.getName)
+
+  def pong(userInfo: SamUserInfoResponse): Either[ErrorResponse, Pong] = {
+    log.info(userInfo.userEmail)
+    log.info(userInfo.userSubjectId)
+    Right(Pong())
+  }
+}
+
 @Api(name = "avram", version = "v1", scopes = Array("https://www.googleapis.com/auth/userinfo.email"))
-class AvramRoutes {
+class AvramRoutes extends BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
   private val samDao = Avram.samDao
@@ -33,19 +44,8 @@ class AvramRoutes {
   }
 
   @ApiMethod(name = "authPing", httpMethod = "get", path = "authPing")
-  def authPing(r: HttpServletRequest): Pong = {
-    getToken(r) match {
-      case None => throw new UnauthorizedException("Missing access token")
-      case Some(token) =>
-        val result: Either[ErrorResponse, SamUserInfoResponse] = samDao.getUserStatus(token)
-        result match {
-          case Left(error) => throw error.exception
-          case Right(userInfo) =>
-            log.info(userInfo.userEmail)
-            log.info(userInfo.userSubjectId)
-            Pong()
-        }
-    }
+  def authPing(request: HttpServletRequest): Pong = {
+    handleAuthenticatedRequest(request) { userInfo => PongService.pong(userInfo) }
   }
 
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
