@@ -2,14 +2,14 @@ package org.broadinstitute.dsde.workbench.avram.db
 
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.scalatest.FreeSpec
-import slick.jdbc.PostgresProfile.api._
+import AvramPostgresProfile.api._
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class PostgreSQLSpec extends FreeSpec {
 
-  val database = CommonTestData.localDatabase
+  val database = CommonTestData.dataSource.database
 
   "should fetch" - {
     "using slick" in {

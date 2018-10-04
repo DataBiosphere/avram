@@ -1,19 +1,24 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
-
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.broadinstitute.dsde.workbench.avram.api.Collection
 import org.scalatest.FlatSpecLike
 
-class ClusterComponentSpec extends TestComponent with FlatSpecLike with CommonTestData {
+class ClusterComponentSpec extends TestComponent with FlatSpecLike {
 
-  "CollectionComponent" should "save" in isolatedDbTest {
+  "CollectionComponent" should "save, get and delete collections" in isolatedDbTest {
+    dbFutureValue { _.collectionQuery.save(CommonTestData.collectionName, CommonTestData.samResource, CommonTestData.user1) }
 
-    val collection = Collection("collection1", "samResource1")
-    dbFutureValue { _.collectionQuery.save(collection.name, collection.samResource) }
+    val saveResult = dbFutureValue { _.collectionQuery.getCollectionByName(CommonTestData.collectionName) }.get
 
-    val result = dbFutureValue { _.collectionQuery.getCollectionByName("collection1") }
-    result shouldEqual Some(collection)
+    saveResult.name shouldEqual CommonTestData.collectionName
+    saveResult.samResource shouldEqual CommonTestData.samResource
+    saveResult.createdBy shouldEqual CommonTestData.user1
 
+    dbFutureValue { _.collectionQuery.deleteCollectionByName(CommonTestData.collectionName )}
+
+    val deleteResult = dbFutureValue { _.collectionQuery.getCollectionByName(CommonTestData.collectionName) }
+
+    deleteResult shouldEqual None
   }
 }

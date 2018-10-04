@@ -1,9 +1,11 @@
 package org.broadinstitute.dsde.workbench.avram
 
+import com.typesafe.config.ConfigFactory
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
-import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
-import net.ceedubs.ficus.Ficus._
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
+import net.ceedubs.ficus.Ficus._
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -28,11 +30,12 @@ object CommonTestData {
     slickQueueSize = 1000
   )
 
-  val localDatabase = new SlickDatabaseFactory(localDataSourceConfig).database
   val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
   private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
   val dataSource = new DbReference(dbcpDataSourceConfig)
 
-  //val entity1 = ...
+  val collectionName = "collection1"
+  val samResource = "samResource1"
+  val user1 = "user1"
 
 }

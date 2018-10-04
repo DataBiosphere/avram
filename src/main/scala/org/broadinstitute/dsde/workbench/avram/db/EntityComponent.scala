@@ -1,50 +1,54 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
 
+import org.broadinstitute.dsde.workbench.avram.api.Entity
+
 import AvramPostgresProfile.api._
-//import org.broadinstitute.dsde.workbench.avram.api.Entity
-import spray.json._
+import io.circe.Json
+import java.sql.Timestamp
+import java.time.Instant
 
 import scala.concurrent.ExecutionContext
 
-case class EntityRecord(id: Long, name: String, collection: Long, entityBody: JsValue)
+case class EntityRecord(id: Long,
+                        name: String,
+                        collectionId: Long,
+                        createdBy: String,
+                        createdTimestamp: Timestamp,
+                        updatedBy: Option[String],
+                        updatedTimestamp: Timestamp,
+                        entityBody: Json)
 
 trait EntityComponent extends AvramComponent  {
   this: CollectionComponent =>
 
   class EntityTable(tag: Tag) extends Table[EntityRecord](tag, "entity") {
-    def id =             column[Long]      ("id", O.PrimaryKey, O.AutoInc)
-    def name =           column[String]    ("name", O.Length(254))
-    def collection =     column[Long]      ("collection")
-    def entityBody =     column[JsValue]   ("entityBody", O.Length(254), O.SqlType("JSONB"))
+    def id =                     column[Long]                  ("id",                O.PrimaryKey, O.AutoInc)
+    def name =                   column[String]                ("name",              O.Length(1000))
+    def collectionId =           column[Long]                  ("collection_id")
+    def createdBy =              column[String]                ("created_by",        O.Length(1000))
+    def createdTimestamp =       column[Timestamp]             ("created_timestamp", O.SqlType("TIMESTAMP(6)"))
+    def updatedBy =              column[Option[String]]        ("updated_by",        O.Length(1000))
+    def updatedTimestamp =       column[Timestamp]             ("updated_timestamp", O.SqlType("TIMESTAMP(6)"))
+    def entityBody =             column[Json]                  ("entity_body",       O.SqlType("JSONB"))
 
-    def collectionForeignKey = foreignKey("FK_COLLECTION", collection, collectionQuery)(_.id)
-    def uniqueKey = index("IDX_NAME_COLLECTION_UNIQUE", (name, collection), unique = true)
+    def collectionForeignKey = foreignKey("FK_COLLECTION", collectionId, collectionQuery)(_.id)
+    def uniqueKey = index("IDX_NAME_COLLECTION_UNIQUE", (name, collectionId), unique = true)
 
-    def * = (id, name, collection, entityBody) <> (EntityRecord.tupled, EntityRecord.unapply)
+    def * = (id, name, collectionId, createdBy, createdTimestamp, updatedBy, updatedTimestamp, entityBody) <> (EntityRecord.tupled, EntityRecord.unapply)
   }
 
   object entityQuery extends TableQuery(new EntityTable(_)) {
 
-    def save(name: String, collection: Long, entityBody: JsValue): DBIO[Int] = {
-      entityQuery += EntityRecord(0, name, collection, entityBody)
+    def save(name: String, collection: Long, createdBy: String,  entityBody: Json): DBIO[Int] = {
+      entityQuery += EntityRecord(0, name, collection, createdBy, Timestamp.from(Instant.now), None, marshalDate(None), entityBody)
     }
-//
-//    def getEntityByName(name: String): DBIO[Option[Entity]] = {
-//      entityQuery.filter { _.name === name}.result map { recs: Seq[EntityRecord] =>
-//        unmarshalEntities(recs).headOption
-//      }
-//    }
-//
-//    def deleteEntityByName(name: String): DBIO[Int] = {
-//      entityQuery.filter { _.name === name }.delete
-//    }
-//
-//    private def unmarshalEntities(entityRecord: Seq[EntityRecord]): Seq[Entity] = {
-//      entityRecord map {
-//        case (recs) => Entity(recs.name, collectionQuery.recs.collection), recs.entityBody)
-//      }
-//    }
+
+    private def unmarshalEntities(entityRecord: Seq[EntityRecord]): Seq[Entity] = {
+      entityRecord map {
+        case (rec) => Entity(rec.name, rec.collectionId, rec.entityBody.noSpaces)
+      }
+    }
   }
 
 }

@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog logicalFilePath="avram" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet logicalFilePath="avram" author="ansingh" id="collection11">
-        <createTable tableName="COLLECTION">
-            <column name="id" type="BIGINT" autoIncrement="true">
+    <changeSet author="ansingh" id="add_collection_table">
+        <createTable tableName="collection">
+            <column name="id" type="bigserial" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(254)">
+            <column name="name" type="varchar(1000)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="samResource" type="VARCHAR(254)">
+            <column name="created_by" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_timestamp" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_by" type="varchar(1000)"/>
+            <column name="updated_timestamp" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sam_resource" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <createIndex tableName="collection" indexName="IDX_collection_name">
+            <column name="name" type="varchar(1000)"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

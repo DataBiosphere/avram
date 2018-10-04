@@ -1,9 +1,14 @@
 package org.broadinstitute.dsde.workbench.avram
 
+import com.typesafe.config.ConfigFactory
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import net.ceedubs.ficus.Ficus._
 import org.apache.commons.dbcp2.BasicDataSource
-import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
+import org.broadinstitute.dsde.workbench.avram.config.{AvramConfig, DbcpDataSourceConfig}
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
-import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
+import org.broadinstitute.dsde.workbench.avram.db.DbReference
+
+import scala.concurrent.ExecutionContext
 
 /**
   * Object providing access to all services. This merges configuration and service code to provide
@@ -31,15 +36,18 @@ import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
   * (https://cloud.google.com/endpoints/docs/frameworks/java/using-guice) might give that control
   * back to us and might be worth exploring.
   */
-object Avram {
-  private val databaseFactory = new SlickDatabaseFactory(AvramConfig.dbcpDataSourceConfig)
+class Avram(implicit val executionContext: ExecutionContext) {
+  private val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
+  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
 
-  val database = databaseFactory.database
+  val database =  DbReference(dbcpDataSourceConfig)(executionContext)
+
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 
   /**
     * DBCP data source provided only for introspection into the database pool statistics. If you're
     * not working with database monitoring, don't use this!
     */
-  val dbcpDataSource: BasicDataSource = databaseFactory.dbcpDataSource
+  val dbcpDataSource: BasicDataSource = database.dbcpDataSource
 }
+

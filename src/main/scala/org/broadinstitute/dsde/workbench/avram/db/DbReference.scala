@@ -12,16 +12,21 @@ case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(impli
 
   val dataAccess = new DataAccess(AvramPostgresProfile)
 
-  val ds = new BasicDataSource()
-  ds.setDriverClassName(dataSourceConfig.driverClassName)
-  ds.setUrl(dataSourceConfig.url)
-  ds.setUsername(dataSourceConfig.username)
-  ds.setPassword(dataSourceConfig.password)
-  ds.setMaxTotal(dataSourceConfig.maxTotal)
+  def makeDbcpDataSource: BasicDataSource = {
+    // See https://commons.apache.org/proper/commons-dbcp/configuration.html for configuration options and defaults
+    val ds = new BasicDataSource()
+    ds.setDriverClassName(dataSourceConfig.driverClassName)
+    ds.setUrl(dataSourceConfig.url)
+    ds.setUsername(dataSourceConfig.username)
+    ds.setPassword(dataSourceConfig.password)
+    ds.setMaxTotal(dataSourceConfig.maxTotal)
+    ds
+  }
+  val dbcpDataSource: BasicDataSource = makeDbcpDataSource
 
-  val database = Database.forDataSource(ds, Option(ds.getMaxTotal), AsyncExecutor("Avram Executor", dataSourceConfig.slickNumThreads, dataSourceConfig.slickQueueSize))
+  val database = Database.forDataSource(dbcpDataSource, Option(dbcpDataSource.getMaxTotal), AsyncExecutor("Avram Executor", dataSourceConfig.slickNumThreads, dataSourceConfig.slickQueueSize))
 
-  def inTransaction[T](f: (DataAccess) => DBIO[T], isolationLevel: TransactionIsolation = TransactionIsolation.RepeatableRead): Future[T] = {
+  def inTransaction[T](f: (DataAccess) => DBIO[T], isolationLevel: TransactionIsolation = TransactionIsolation.ReadCommitted): Future[T] = {
     import dataAccess.profile.api._
     database.run(f(dataAccess).transactionally.withTransactionIsolation(isolationLevel))
   }

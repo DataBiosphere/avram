@@ -1,7 +1,9 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
+import java.sql.Timestamp
 import com.typesafe.config.ConfigFactory
 
+import io.circe.Json
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
@@ -17,12 +19,18 @@ import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import scala.beans.BeanProperty
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
 
 case class Pong()
 case class Now(@BeanProperty message: String)
-case class Collection(@BeanProperty name: String, @BeanProperty samResource: String)
+case class Collection(@BeanProperty name: String,
+                      @BeanProperty samResource: String,
+                      @BeanProperty createdBy: String, createdTimestamp: Timestamp,
+                      @BeanProperty updatedBy: Option[String],
+                      @BeanProperty updatedTimestamp: Timestamp)
+case class Entity(@BeanProperty name: String, @BeanProperty collection: Long, @BeanProperty entityBody: String)
 case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)
 
 /**
@@ -42,10 +50,8 @@ object PongService {
 class AvramRoutes extends BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
-  private val database = Avram.database
-  val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
-  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
-  val dataReference =  DbReference(dbcpDataSourceConfig)
+  private val avram = new Avram()
+  private val database = avram.database
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
   def ping: Pong = {
@@ -67,13 +73,40 @@ class AvramRoutes extends BaseEndpoint {
   def addCollection: Collection = {
     Await.result(
       for {
-        _ <- dataReference.inTransaction { dataAccess => dataAccess.collectionQuery.save("testResource", "samResource1") }
+        _ <- database.inTransaction { dataAccess => dataAccess.collectionQuery.save("testResource", "samResource1", "anu") }
       } yield {
-        Collection("testResource", "samResource2")
+        Collection("testResource", "samResource2", )
       }, Duration.Inf)
   }
 
+  //I'm going to delete this obvs but here's how we might use a Transaction
+  @ApiMethod(name = "addEntity", httpMethod = "get", path = "addEntity")
+  def addEntity: Entity = {
+    val fieldList = Json.fromFields(List(("key1", Json.fromString("value1")), ("key2", Json.fromInt(1))))
+    Await.result(
+      for {
+        _ <- database.inTransaction { dataAccess => dataAccess.entityQuery.save("testEntity5", 1, "anu", fieldList) }
+      } yield {
+        Entity("testEntity5", 1, fieldList.noSpaces)
+      }, Duration.Inf)
+  }
 
+//  //I'm going to delete this obvs but here's how we might use a Transaction
+//  @ApiMethod(name = "getEntity", httpMethod = "get", path = "getEntity")
+//  def getEntity: EntityAlt = {
+//    //val fieldList = Json.fromFields(List(("key1", Json.fromString("value1")), ("key2", Json.fromInt(1))))
+//    val entity = Await.result(
+//      for {
+//         entity <- database.inTransaction { dataAccess => dataAccess.entityQuery.getEntityByName("testEntity5", 1)}
+//      } yield {
+//        entity
+//      }, Duration.Inf)
+//
+//    entity match {
+//      case Some(ent) => EntityAlt("testEntity5", 1, ent.entityBody.noSpaces)
+//      case None => EntityAlt("NOPE", 1, "no")
+//    }
+//  }
 
 //  // TODO: remove this endpoint when we have more meaningful ways to test database queries
 //  @ApiMethod(name = "now", httpMethod = "get", path = "now")

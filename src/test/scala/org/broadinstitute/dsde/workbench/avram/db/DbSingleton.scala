@@ -2,6 +2,7 @@ package org.broadinstitute.dsde.workbench.avram.db
 
 import com.typesafe.config.ConfigFactory
 import net.ceedubs.ficus.Ficus._
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import org.broadinstitute.dsde.workbench.avram.TestExecutionContext
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 
