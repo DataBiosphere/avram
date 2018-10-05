@@ -18,8 +18,7 @@ trait StubbedHeaders {
   def headers: Map[String, List[String]]
 
   def getHeader(name: String): String = {
-    Try(headers.filterKeys(_.equalsIgnoreCase(name))
-      .foldLeft(List.empty[String])((acc, kv) => acc ++ kv._2).head).getOrElse(null)
+    headers.filterKeys(_.equalsIgnoreCase(name)).values.flatten.headOption.orNull
   }
 
   def getHeaders(name: String): util.Enumeration[_] =

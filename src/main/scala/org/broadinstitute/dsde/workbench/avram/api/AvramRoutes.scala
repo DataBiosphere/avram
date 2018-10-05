@@ -35,7 +35,6 @@ object PongService {
 class AvramRoutes extends BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
-  private val samDao = Avram.samDao
   private val database = Avram.database
 
   @ApiMethod(name = "ping", httpMethod = "get", path = "ping")
@@ -64,12 +63,6 @@ class AvramRoutes extends BaseEndpoint {
         sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int])
     } yield DbPoolStats(dataSource.getNumActive, dataSource.getNumIdle, totalConnections.head)
     Await.result(result, Duration.Inf)
-  }
-
-  private def getToken(req: HttpServletRequest) = {
-    Option(req.getHeader("Authorization")) map {
-      _.stripPrefix("Bearer ")
-    }
   }
 
   private def fetchTimestampFromDBWithSlick(): String = {

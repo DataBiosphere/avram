@@ -7,6 +7,7 @@ import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
 trait BaseEndpoint {
   private val samDao = Avram.samDao
+  private val bearerPattern = """(?i)bearer (.*)""".r
 
   def handleAuthenticatedRequest[T]
       (request: HttpServletRequest)
@@ -33,7 +34,7 @@ trait BaseEndpoint {
   private def extractBearerToken(r: HttpServletRequest): Either[ErrorResponse, String] = {
     val token = for {
       value <- Option(r.getHeader("Authorization"))
-      tokenMatch <- """(?i)bearer (.*)""".r.findPrefixMatchOf(value)
+      tokenMatch <- bearerPattern.findPrefixMatchOf(value)
     } yield tokenMatch.group(1)
     token.toRight(ErrorResponse(401, "Missing token"))
   }
