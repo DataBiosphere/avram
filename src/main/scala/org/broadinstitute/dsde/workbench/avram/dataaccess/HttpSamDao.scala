@@ -24,9 +24,6 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     } yield userInfo
   }
 
-  private def responseToErrorResponse(response: Response[String]): String => ErrorResponse = error => ErrorResponse(response.code, error)
-  private def circeErrorToErrorResponse(e: io.circe.Error): ErrorResponse = ErrorResponse(500, e.getMessage)
-
   // For the sake of comparison, this is what getUserStatus used to look like
   private def longhandResponseToEitherErrorOrUserInfo(response: Id[Response[String]]): Either[ErrorResponse, SamUserInfoResponse] = {
     response.body match {

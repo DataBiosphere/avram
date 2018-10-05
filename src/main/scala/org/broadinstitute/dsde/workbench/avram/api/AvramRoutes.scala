@@ -47,6 +47,12 @@ class AvramRoutes extends BaseEndpoint {
     handleAuthenticatedRequest(request) { userInfo => PongService.pong(userInfo) }
   }
 
+//  @ApiMethod(name = "getEntities", httpMethod = "get", path = "getEntities")
+//  def getEntities: EntityResponse = {
+//    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
+//    GetEntities(Await.result(Future(fetchTimestampFromDBWithSlick()), Duration.Inf))
+//  }
+
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
   @ApiMethod(name = "now", httpMethod = "get", path = "now")
   def now: Now = {

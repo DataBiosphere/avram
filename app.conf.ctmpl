@@ -20,4 +20,8 @@ sam = {
   baseUrl = "https://sam.dsde-{{$environment}}.broadinstitute.org"
 }
 
+rawls = {
+  baseUrl = "https://rawls.dsde-{{$environment}}.broadinstitute.org"
+}
+
 {{end}}{{end}}{{end}}{{end}}

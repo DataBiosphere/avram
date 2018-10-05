@@ -12,4 +12,5 @@ object AvramConfig {
 
   val dbcpDataSourceConfig: DbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
   val sam: SamConfig = configFactory.as[SamConfig]("sam")
+  val rawls: RawlsConfig = configFactory.as[RawlsConfig]("rawls")
 }
