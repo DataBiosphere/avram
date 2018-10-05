@@ -5,13 +5,13 @@ import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
-trait BaseEndpoint {
+abstract class BaseEndpoint {
   private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
   def handleAuthenticatedRequest[T]
       (request: HttpServletRequest)
-      (f: SamUserInfoResponse => Either[ErrorResponse, T]): T = {
+      (f: UserInfo => Either[ErrorResponse, T]): T = {
     unsafeRun {
       for {
         userInfo <- extractUserInfo(request)
@@ -24,11 +24,11 @@ trait BaseEndpoint {
     f.fold(e => throw e.exception, identity)
   }
 
-  private def extractUserInfo(r: HttpServletRequest): Either[ErrorResponse, SamUserInfoResponse] = {
+  private def extractUserInfo(r: HttpServletRequest): Either[ErrorResponse, UserInfo] = {
     for {
       token <- extractBearerToken(r)
-      userInfo <- samDao.getUserStatus(token)
-    } yield userInfo
+      samUserInfo <- samDao.getUserStatus(token)
+    } yield UserInfo(samUserInfo.userSubjectId, samUserInfo.userEmail, samUserInfo.enabled, token)
   }
 
   private def extractBearerToken(r: HttpServletRequest): Either[ErrorResponse, String] = {

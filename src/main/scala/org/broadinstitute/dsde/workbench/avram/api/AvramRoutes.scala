@@ -2,10 +2,10 @@ package org.broadinstitute.dsde.workbench.avram.api
 
 import java.util.logging.Logger
 
-import com.google.api.server.spi.config.{Api, ApiMethod}
+import com.google.api.server.spi.config.{Api, ApiMethod, Named}
 import javax.servlet.http.HttpServletRequest
 import org.broadinstitute.dsde.workbench.avram.Avram
-import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
+import org.broadinstitute.dsde.workbench.avram.dataaccess.EntityResponse
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import slick.jdbc.PostgresProfile.api._
 
@@ -18,15 +18,16 @@ case class Pong()
 case class Now(@BeanProperty message: String)
 case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)
 
+
 /**
   * Illustration of business logic living outside of the endpoint class.
   */
 object PongService {
   private val log = Logger.getLogger(getClass.getName)
 
-  def pong(userInfo: SamUserInfoResponse): Either[ErrorResponse, Pong] = {
-    log.info(userInfo.userEmail)
-    log.info(userInfo.userSubjectId)
+  def pong(userInfo: UserInfo): Either[ErrorResponse, Pong] = {
+    log.info(userInfo.email)
+    log.info(userInfo.subjectId)
     Right(Pong())
   }
 }
@@ -47,11 +48,14 @@ class AvramRoutes extends BaseEndpoint {
     handleAuthenticatedRequest(request) { userInfo => PongService.pong(userInfo) }
   }
 
-//  @ApiMethod(name = "getEntities", httpMethod = "get", path = "getEntities")
-//  def getEntities: EntityResponse = {
-//    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
-//    GetEntities(Await.result(Future(fetchTimestampFromDBWithSlick()), Duration.Inf))
-//  }
+  @ApiMethod(name = "getEntities", httpMethod = "get", path = "getEntities")
+  def getEntities(request: HttpServletRequest,
+                  @Named( "wsNamespace") wsNamespace: String,
+                  @Named( "wsName") wsName: String,
+                  @Named( "entityType") entityType: String): EntityResponse = {
+    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
+    handleAuthenticatedRequest(request) { userInfo => Avram.rawlsDao.queryEntitiesOfType(wsNamespace, wsName, entityType, userInfo.token) }
+  }
 
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
   @ApiMethod(name = "now", httpMethod = "get", path = "now")

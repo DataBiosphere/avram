@@ -15,7 +15,8 @@ class HttpRawlsDao(rawlsUrl: String) extends RawlsDao with RestClient  {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
   override def queryEntitiesOfType(workspaceNamespace: String, workspaceName: String, entityType: String, token: String): Either[ErrorResponse,EntityResponse] = {
-    val request: Request[String, Nothing] = buildAuthenticatedGetRequest(rawlsUrl, s"/workspaces/$workspaceNamespace/$workspaceName/$entityType", token)
+    val request: Request[String, Nothing] = buildAuthenticatedGetRequest(rawlsUrl, s"/api/workspaces/$workspaceNamespace/$workspaceName/entityQuery/$entityType", token)
+    log.warning(request.toString)
     for {
       response <- request.send()
       content <- response.body                 leftMap responseToErrorResponse(response)

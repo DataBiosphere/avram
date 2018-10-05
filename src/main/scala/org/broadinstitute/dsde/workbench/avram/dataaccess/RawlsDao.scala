@@ -3,6 +3,7 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 import io.circe.Json
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
+import scala.beans.BeanProperty
 import scala.concurrent.Future
 
 trait RawlsDao {
@@ -23,8 +24,9 @@ trait RawlsDao {
 //  def getEntityTypes(workspaceNamespace: String, workspaceName: String)(implicit userToken: UserInfo): Future[Map[String, EntityTypeMetadata]]
 //
 //  def fetchAllEntitiesOfType(workspaceNamespace: String, workspaceName: String, entityType: String)(implicit userToken: UserInfo): Future[Seq[Entity]]
-
-  case class EntityResponse(results: List[Entity])
-  case class Entity(name: String, entityType: String, attributes: Map[String, String])
-
 }
+
+case class EntityResponse(@BeanProperty results: List[Entity])
+
+case class Entity(@BeanProperty name: String, @BeanProperty entityType: String, @BeanProperty attributes: Map[String, String])
+
