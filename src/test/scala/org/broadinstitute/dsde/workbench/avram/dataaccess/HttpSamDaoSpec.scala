@@ -1,23 +1,12 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
-import io.circe.generic.auto._
-import io.circe.syntax._
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
-import org.mockserver.integration.ClientAndServer
-import org.mockserver.model.Header
-import org.mockserver.model.HttpRequest._
-import org.mockserver.model.HttpResponse._
-import org.mockserver.model.NottableString.not
-import org.scalatest.{BeforeAndAfter, FreeSpec, Matchers}
+import org.scalatest.{FreeSpec, Matchers}
 
-class HttpSamDaoSpec extends FreeSpec with BeforeAndAfter with Matchers {
+class HttpSamDaoSpec extends FreeSpec with Matchers with MockSam {
 
-  val samPort = 9999
-  val samDao = new HttpSamDao(s"http://localhost:$samPort")
-  var mockSam: MockSam = _
-
-  before { mockSam = new MockSam(samPort) }
-  after { mockSam.stop() }
+  override def samPort = 9999
+  lazy val samDao = new HttpSamDao(mockSam.baseUrl)
 
   "HttpSamDao" - {
     "should return 401 error when token is empty" in {
@@ -25,31 +14,13 @@ class HttpSamDaoSpec extends FreeSpec with BeforeAndAfter with Matchers {
     }
 
     "should return valid user response for authenticated user" in {
-      val userInfo = SamUserInfoResponse("123", "test@dummy.org", enabled = true)
-      mockSam.when(request()
-        .withMethod("GET")
-        .withPath("/register/user/v2/self/info")
-        .withHeader(new Header("Authorization", "Bearer test")))
-        .respond(response(userInfo.asJson.toString))
+      val token = "test"
+      val subjectId = "123"
+      val email = "test@dummy.org"
+      mockSam.addValidAuthentication(token, subjectId, email)
 
-      samDao.getUserStatus("test") shouldEqual Right(userInfo)
+      val expectedResponse = SamUserInfoResponse(subjectId, email, enabled = true)
+      samDao.getUserStatus(token) shouldEqual Right(expectedResponse)
     }
   }
-}
-
-class MockSam(port: Integer) extends ClientAndServer(port) {
-
-  // 401 on missing authorization header
-  when(request()
-    .withMethod("GET")
-    .withPath("/register/user/v2/self/info")
-    .withHeaders(new Header(not("Authorization")))
-  ).respond(response("Unauthorized").withStatusCode(401))
-
-  // 401 on missing bearer token
-  when(request()
-    .withMethod("GET")
-    .withPath("/register/user/v2/self/info")
-    .withHeader(new Header("Authorization", "Bearer"))
-  ).respond(response("Unauthorized").withStatusCode(401))
 }
