@@ -5,7 +5,7 @@ import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
-trait BaseEndpoint {
+abstract class BaseEndpoint {
   private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
