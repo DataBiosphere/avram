@@ -27,10 +27,17 @@ case class Pong()
 case class Now(@BeanProperty message: String)
 case class Collection(@BeanProperty name: String,
                       @BeanProperty samResource: String,
-                      @BeanProperty createdBy: String, createdTimestamp: Timestamp,
+                      @BeanProperty createdBy: String,
+                      @BeanProperty createdTimestamp: Timestamp,
                       @BeanProperty updatedBy: Option[String],
                       @BeanProperty updatedTimestamp: Timestamp)
-case class Entity(@BeanProperty name: String, @BeanProperty collection: Long, @BeanProperty entityBody: String)
+case class Entity(@BeanProperty name: String,
+                  @BeanProperty collection: Long,
+                  @BeanProperty createdBy: String,
+                  @BeanProperty createdTimestamp: Timestamp,
+                  @BeanProperty updatedBy: Option[String],
+                  @BeanProperty updatedTimestamp: Timestamp,
+                  @BeanProperty entityBody: String)
 case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)
 
 /**
@@ -63,33 +70,32 @@ class AvramRoutes extends BaseEndpoint {
     handleAuthenticatedRequest(request) { userInfo => PongService.pong(userInfo) }
   }
 
-  // TODO: remove this endpoint when we have more meaningful ways to test database queries
-  @ApiMethod(name = "now", httpMethod = "get", path = "now")
-  def now: Now = {
-    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
-    Now(Await.result(Future(fetchTimestampFromDBWithSlick()), Duration.Inf))
-  //I'm going to delete this obvs but here's how we might use a Transaction
-  @ApiMethod(name = "addCollection", httpMethod = "get", path = "addCollection")
-  def addCollection: Collection = {
-    Await.result(
-      for {
-        _ <- database.inTransaction { dataAccess => dataAccess.collectionQuery.save("testResource", "samResource1", "anu") }
-      } yield {
-        Collection("testResource", "samResource2", )
-      }, Duration.Inf)
-  }
-
-  //I'm going to delete this obvs but here's how we might use a Transaction
-  @ApiMethod(name = "addEntity", httpMethod = "get", path = "addEntity")
-  def addEntity: Entity = {
-    val fieldList = Json.fromFields(List(("key1", Json.fromString("value1")), ("key2", Json.fromInt(1))))
-    Await.result(
-      for {
-        _ <- database.inTransaction { dataAccess => dataAccess.entityQuery.save("testEntity5", 1, "anu", fieldList) }
-      } yield {
-        Entity("testEntity5", 1, fieldList.noSpaces)
-      }, Duration.Inf)
-  }
+//  // TODO: remove this endpoint when we have more meaningful ways to test database queries
+//  @ApiMethod(name = "now", httpMethod = "get", path = "now")
+//  def now: Now = {
+//    // Explicitly use a Future to make sure the implicit ExecutionContext is being used
+//    Now(Await.result(Future(fetchTimestampFromDBWithSlick()), Duration.Inf))////I'm going to delete this obvs but here's how we might use a Transaction
+//  @ApiMethod(name = "addCollection", httpMethod = "get", path = "addCollection")
+//  def addCollection: Collection = {
+//    Await.result(
+//      for {
+//        _ <- database.inTransaction { dataAccess => dataAccess.collectionQuery.save("testResource", "samResource1", "anu") }
+//      } yield {
+//        Collection("testResource", "samResource2", )
+//      }, Duration.Inf)
+//  }
+//
+  ////I'm going to delete this obvs but here's how we might use a Transaction
+//  @ApiMethod(name = "addEntity", httpMethod = "get", path = "addEntity")
+//  def addEntity: Entity = {
+//    val fieldList = Json.fromFields(List(("key1", Json.fromString("value1")), ("key2", Json.fromInt(1))))
+//    Await.result(
+//      for {
+//        _ <- database.inTransaction { dataAccess => dataAccess.entityQuery.save("testEntity5", 1, "anu", fieldList) }
+//      } yield {
+//        Entity("testEntity5", 1, fieldList.noSpaces)
+//      }, Duration.Inf)
+//  }
 
 //  //I'm going to delete this obvs but here's how we might use a Transaction
 //  @ApiMethod(name = "getEntity", httpMethod = "get", path = "getEntity")

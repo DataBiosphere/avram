@@ -44,9 +44,18 @@ trait EntityComponent extends AvramComponent  {
       entityQuery += EntityRecord(0, name, collection, createdBy, Timestamp.from(Instant.now), None, marshalDate(None), entityBody)
     }
 
+    def getEntityByName(name: String, collectionId: Long): DBIO[Option[Entity]] = {
+      entityQuery
+        .filter { _.name === name}
+        .filter { _.collectionId === collectionId }
+        .result map { recs: Seq[EntityRecord] =>
+        unmarshalEntities(recs).headOption
+      }
+    }
+
     private def unmarshalEntities(entityRecord: Seq[EntityRecord]): Seq[Entity] = {
       entityRecord map {
-        case (rec) => Entity(rec.name, rec.collectionId, rec.entityBody.noSpaces)
+        case (rec) => Entity(rec.name, rec.collectionId, rec.createdBy, rec.createdTimestamp, rec.updatedBy, rec.updatedTimestamp, rec.entityBody.noSpaces)
       }
     }
   }

@@ -1,6 +1,8 @@
 package org.broadinstitute.dsde.workbench.avram
 
+
 import com.typesafe.config.ConfigFactory
+import io.circe.Json
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
 import net.ceedubs.ficus.Ficus._
@@ -37,5 +39,8 @@ object CommonTestData {
   val collectionName = "collection1"
   val samResource = "samResource1"
   val user1 = "user1"
+
+  val entityName = "entity1"
+  val entityBody1 = Json.fromFields(List(("key1", Json.fromString("value1")), ("key2", Json.fromInt(1))))
 
 }

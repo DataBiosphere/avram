@@ -9,6 +9,12 @@ start() {
     # start up PostgreSQL
     echo "starting up postgres container..."
     docker run --name $CONTAINER -e POSTGRES_USER=avram -e POSTGRES_PASSWORD=test -e POSTGRES_DB=testdb -d -p 5432:5432 circleci/postgres:$POSTGRES_VERSION-alpine-ram
+    echo "sleeping for 5 seconds"
+    sleep 5s
+
+    echo "running liquibase"
+    cd db
+    ./db-deploy.sh
 }
 
 stop() {
