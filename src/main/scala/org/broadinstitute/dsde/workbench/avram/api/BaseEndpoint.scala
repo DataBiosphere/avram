@@ -8,18 +8,15 @@ import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.db.DataAccess
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import slick.dbio.DBIO
-import slick.jdbc.TransactionIsolation
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
-  private val avram = new Avram()
-  val database = avram.database
-  private val samDao = avram.samDao
+  val database = Avram.database
+  private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
   def handleAuthenticatedRequest[T]

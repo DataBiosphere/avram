@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 
 trait TestComponent extends Matchers with ScalaFutures with AvramComponent {
   override val profile: JdbcProfile = DbSingleton.ref.dataAccess.profile
-  override implicit val executionContext: ExecutionContext = TestExecutionContext.testExecutionContext
+  implicit val executionContext: ExecutionContext = TestExecutionContext.testExecutionContext
   implicit override val patienceConfig = PatienceConfig(timeout = scaled(Span(10, Seconds)))
   val defaultServiceAccountKeyId = ServiceAccountKeyId("123")
 
