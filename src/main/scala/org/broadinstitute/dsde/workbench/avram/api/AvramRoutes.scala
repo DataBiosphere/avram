@@ -15,15 +15,15 @@ case class Collection(@BeanProperty name: String,
                       @BeanProperty samResource: String,
                       @BeanProperty createdBy: String,
                       @BeanProperty createdTimestamp: Timestamp,
-                      @BeanProperty updatedBy: Option[String],
+                      @BeanProperty updatedBy: String,
                       @BeanProperty updatedTimestamp: Timestamp)
 case class Entity(@BeanProperty name: String,
                   @BeanProperty collection: Long,
+                  @BeanProperty entityBody: String,
                   @BeanProperty createdBy: String,
                   @BeanProperty createdTimestamp: Timestamp,
-                  @BeanProperty updatedBy: Option[String],
-                  @BeanProperty updatedTimestamp: Timestamp,
-                  @BeanProperty entityBody: String)
+                  @BeanProperty updatedBy: String,
+                  @BeanProperty updatedTimestamp: Timestamp)
 case class Status(@BeanProperty databaseStatus: String) // add other dependencies as we need them -- TODO: add Sam status
 case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)
 

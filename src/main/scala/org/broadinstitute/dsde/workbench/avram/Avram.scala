@@ -35,10 +35,8 @@ import org.broadinstitute.dsde.workbench.avram.db.DbReference
   * back to us and might be worth exploring.
   */
 object Avram {
-  private val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
-  private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
 
-  val database =  DbReference(dbcpDataSourceConfig)
+  val database = DbReference(AvramConfig.dbcpDataSourceConfig)
 
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 

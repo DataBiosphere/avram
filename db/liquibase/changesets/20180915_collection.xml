@@ -17,7 +17,9 @@
             <column name="created_timestamp" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_by" type="varchar(1000)"/>
+            <column name="updated_by" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
             <column name="updated_timestamp" type="timestamp">
                 <constraints nullable="false"/>
             </column>

@@ -13,7 +13,7 @@ case class CollectionRecord(id: Long,
                             createdBy: String,
                             samResource: String,
                             createdTimestamp: Timestamp,
-                            updatedBy: Option[String],
+                            updatedBy: String,
                             updatedTimestamp: Timestamp)
 
 trait CollectionComponent extends AvramComponent {
@@ -24,7 +24,7 @@ trait CollectionComponent extends AvramComponent {
     def samResource =            column[String]          ("sam_resource",        O.Length(1000))
     def createdBy =              column[String]          ("created_by",          O.Length(1000))
     def createdTimestamp =       column[Timestamp]       ("created_timestamp",   O.SqlType("TIMESTAMP(6)"))
-    def updatedBy =              column[Option[String]]  ("updated_by",          O.Length(1000))
+    def updatedBy =              column[String]          ("updated_by",          O.Length(1000))
     def updatedTimestamp =       column[Timestamp]       ("updated_timestamp",   O.SqlType("TIMESTAMP(6)"))
 
     def * = (id, name, samResource, createdBy, createdTimestamp, updatedBy, updatedTimestamp) <> (CollectionRecord.tupled, CollectionRecord.unapply)
@@ -33,7 +33,9 @@ trait CollectionComponent extends AvramComponent {
   object collectionQuery extends TableQuery(new CollectionTable(_)) {
 
     def save(name: String, samResource: String, createdBy: String): DBIO[Int] = {
-      collectionQuery += CollectionRecord(0, name, createdBy, samResource, Timestamp.from(Instant.now), None, marshalDate(None))
+      val now = Timestamp.from(Instant.now)
+      //currently the updatedBy and updatedTimestamp are the same as created at save time
+      collectionQuery += CollectionRecord(0, name, createdBy, samResource, now, createdBy, now)
     }
 
     def getCollectionByName(name: String)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
