@@ -36,13 +36,13 @@ trait CollectionComponent extends AvramComponent {
       collectionQuery += CollectionRecord(0, name, createdBy, samResource, Timestamp.from(Instant.now), None, marshalDate(None))
     }
 
-    def getCollectionByName(name: String): DBIO[Option[Collection]] = {
+    def getCollectionByName(name: String)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
       collectionQuery.filter { _.name === name}.result map { recs: Seq[CollectionRecord] =>
         unmarshalCollections(recs).headOption
       }
     }
 
-    def getCollectionIdByName(name: String): DBIO[Option[Long]] = {
+    def getCollectionIdByName(name: String)(implicit executionContext: ExecutionContext): DBIO[Option[Long]] = {
       collectionQuery.filter { _.name === name }.result map { recs: Seq[CollectionRecord] =>
         val idSeq = recs map { _.id }
         idSeq.headOption

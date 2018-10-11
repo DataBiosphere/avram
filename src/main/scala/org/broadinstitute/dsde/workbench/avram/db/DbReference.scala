@@ -5,12 +5,10 @@ import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import slick.dbio.DBIO
 import slick.jdbc.{JdbcProfile, TransactionIsolation}
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.Future
 import AvramPostgresProfile.api._
 
-import scala.concurrent.duration.Duration
-
-case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(implicit val executionContext: ExecutionContext) {
+case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig) {
 
   val dataAccess = new DataAccess(AvramPostgresProfile)
 
@@ -33,7 +31,7 @@ case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(impli
   }
 }
 
-class DataAccess(val profile: JdbcProfile)(implicit val executionContext: ExecutionContext) extends AllComponents {
+class DataAccess(val profile: JdbcProfile) extends AllComponents {
 
   def truncateAll(): DBIO[Int] = {
 

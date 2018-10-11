@@ -8,10 +8,8 @@ import org.broadinstitute.dsde.workbench.avram.config.{AvramConfig, DbcpDataSour
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
 
-import scala.concurrent.ExecutionContext
-
 /**
-  * Class providing access to all services. This merges configuration and service code to provide
+  * Object providing access to all services. This merges configuration and service code to provide
   * one-stop access for endpoint implementations.
   *
   * Service clients:
@@ -36,11 +34,11 @@ import scala.concurrent.ExecutionContext
   * (https://cloud.google.com/endpoints/docs/frameworks/java/using-guice) might give that control
   * back to us and might be worth exploring.
   */
-class Avram(implicit val executionContext: ExecutionContext) {
+object Avram {
   private val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
   private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
 
-  val database =  DbReference(dbcpDataSourceConfig)(executionContext)
+  val database =  DbReference(dbcpDataSourceConfig)
 
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 

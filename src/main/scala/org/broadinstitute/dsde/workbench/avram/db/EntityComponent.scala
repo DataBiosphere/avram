@@ -44,7 +44,7 @@ trait EntityComponent extends AvramComponent  {
       entityQuery += EntityRecord(0, name, collection, entityBody, createdBy, Timestamp.from(Instant.now), None, marshalDate(None))
     }
 
-    def getEntityByName(name: String, collectionId: Long): DBIO[Option[Entity]] = {
+    def getEntityByName(name: String, collectionId: Long)(implicit executionContext: ExecutionContext): DBIO[Option[Entity]] = {
       entityQuery
         .filter { _.name === name}
         .filter { _.collectionId === collectionId }
