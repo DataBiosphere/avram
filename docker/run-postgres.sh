@@ -14,7 +14,7 @@ start() {
 
     echo "running liquibase"
     cd db
-    ./db-deploy.sh
+    ./run-liquibase.sh
 }
 
 stop() {
