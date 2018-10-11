@@ -1,12 +1,25 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
+import java.util.logging.Logger
 import javax.servlet.http.HttpServletRequest
+
 import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
+import org.broadinstitute.dsde.workbench.avram.db.DataAccess
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
+import slick.dbio.DBIO
+import slick.jdbc.TransactionIsolation
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class BaseEndpoint {
-  private val samDao = Avram.samDao
+
+  private val log = Logger.getLogger(getClass.getName)
+  private val avram = new Avram()
+  val database = avram.database
+  private val samDao = avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
   def handleAuthenticatedRequest[T]
@@ -38,4 +51,10 @@ abstract class BaseEndpoint {
     } yield tokenMatch.group(1)
     token.toRight(ErrorResponse(401, "Missing token"))
   }
+
+  def inTransaction[T](f: (DataAccess) => DBIO[T]): T = {
+    Await.result(database.inTransaction(f) , Duration.Inf)
+  }
+
+
 }

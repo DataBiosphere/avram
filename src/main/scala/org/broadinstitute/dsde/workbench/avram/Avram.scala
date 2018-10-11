@@ -11,7 +11,7 @@ import org.broadinstitute.dsde.workbench.avram.db.DbReference
 import scala.concurrent.ExecutionContext
 
 /**
-  * Object providing access to all services. This merges configuration and service code to provide
+  * Class providing access to all services. This merges configuration and service code to provide
   * one-stop access for endpoint implementations.
   *
   * Service clients:

@@ -4,9 +4,11 @@ import org.apache.commons.dbcp2.BasicDataSource
 import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import slick.dbio.DBIO
 import slick.jdbc.{JdbcProfile, TransactionIsolation}
-import scala.concurrent.{ExecutionContext, Future}
 
+import scala.concurrent.{Await, ExecutionContext, Future}
 import AvramPostgresProfile.api._
+
+import scala.concurrent.duration.Duration
 
 case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(implicit val executionContext: ExecutionContext) {
 
@@ -27,7 +29,6 @@ case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(impli
   val database = Database.forDataSource(dbcpDataSource, Option(dbcpDataSource.getMaxTotal), AsyncExecutor("Avram Executor", dataSourceConfig.slickNumThreads, dataSourceConfig.slickQueueSize))
 
   def inTransaction[T](f: (DataAccess) => DBIO[T], isolationLevel: TransactionIsolation = TransactionIsolation.ReadCommitted): Future[T] = {
-    import dataAccess.profile.api._
     database.run(f(dataAccess).transactionally.withTransactionIsolation(isolationLevel))
   }
 }
@@ -35,7 +36,6 @@ case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig)(impli
 class DataAccess(val profile: JdbcProfile)(implicit val executionContext: ExecutionContext) extends AllComponents {
 
   def truncateAll(): DBIO[Int] = {
-    import profile.api._
 
     // important to keep the right order for referential integrity !
     // if table X has a Foreign Key to table Y, delete table X first
@@ -43,8 +43,14 @@ class DataAccess(val profile: JdbcProfile)(implicit val executionContext: Execut
   }
 
   def sqlDBStatus() = {
-    import profile.api._
-
     sql"select version()".as[String]
+  }
+
+  def sqlDbFetchTimestampl() = {
+    sql"select now()".as[String]
+  }
+
+  def dbTotalConnections() = {
+    sql"select count(*) from pg_stat_activity where pid <> pg_backend_pid() and usename = current_user".as[Int]
   }
 }
