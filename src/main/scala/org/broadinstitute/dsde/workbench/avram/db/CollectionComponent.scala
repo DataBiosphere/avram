@@ -20,7 +20,7 @@ trait CollectionComponent extends AvramComponent {
 
   class CollectionTable(tag: Tag) extends Table[CollectionRecord](tag, "collection") {
     def id =                     column[Long]            ("id",                  O.PrimaryKey, O.AutoInc)
-    def name =                   column[String]          ("name",                O.PrimaryKey, O.Length(1000))
+    def name =                   column[String]          ("name",                O.Unique, O.Length(1000))
     def samResource =            column[String]          ("sam_resource",        O.Length(1000))
     def createdBy =              column[String]          ("created_by",          O.Length(1000))
     def createdTimestamp =       column[Timestamp]       ("created_timestamp",   O.SqlType("TIMESTAMP(6)"))

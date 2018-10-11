@@ -13,11 +13,11 @@ import scala.concurrent.ExecutionContext
 case class EntityRecord(id: Long,
                         name: String,
                         collectionId: Long,
+                        entityBody: Json,
                         createdBy: String,
                         createdTimestamp: Timestamp,
                         updatedBy: Option[String],
-                        updatedTimestamp: Timestamp,
-                        entityBody: Json)
+                        updatedTimestamp: Timestamp)
 
 trait EntityComponent extends AvramComponent  {
   this: CollectionComponent =>
@@ -26,22 +26,22 @@ trait EntityComponent extends AvramComponent  {
     def id =                     column[Long]                  ("id",                O.PrimaryKey, O.AutoInc)
     def name =                   column[String]                ("name",              O.Length(1000))
     def collectionId =           column[Long]                  ("collection_id")
+    def entityBody =             column[Json]                  ("entity_body",       O.SqlType("JSONB"))
     def createdBy =              column[String]                ("created_by",        O.Length(1000))
     def createdTimestamp =       column[Timestamp]             ("created_timestamp", O.SqlType("TIMESTAMP(6)"))
     def updatedBy =              column[Option[String]]        ("updated_by",        O.Length(1000))
     def updatedTimestamp =       column[Timestamp]             ("updated_timestamp", O.SqlType("TIMESTAMP(6)"))
-    def entityBody =             column[Json]                  ("entity_body",       O.SqlType("JSONB"))
 
     def collectionForeignKey = foreignKey("FK_COLLECTION", collectionId, collectionQuery)(_.id)
     def uniqueKey = index("IDX_NAME_COLLECTION_UNIQUE", (name, collectionId), unique = true)
 
-    def * = (id, name, collectionId, createdBy, createdTimestamp, updatedBy, updatedTimestamp, entityBody) <> (EntityRecord.tupled, EntityRecord.unapply)
+    def * = (id, name, collectionId, entityBody, createdBy, createdTimestamp, updatedBy, updatedTimestamp) <> (EntityRecord.tupled, EntityRecord.unapply)
   }
 
   object entityQuery extends TableQuery(new EntityTable(_)) {
 
     def save(name: String, collection: Long, createdBy: String,  entityBody: Json): DBIO[Int] = {
-      entityQuery += EntityRecord(0, name, collection, createdBy, Timestamp.from(Instant.now), None, marshalDate(None), entityBody)
+      entityQuery += EntityRecord(0, name, collection, entityBody, createdBy, Timestamp.from(Instant.now), None, marshalDate(None))
     }
 
     def getEntityByName(name: String, collectionId: Long): DBIO[Option[Entity]] = {

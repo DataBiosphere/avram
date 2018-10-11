@@ -8,6 +8,12 @@
             <column name="name" type="varchar(1000)">
                 <constraints nullable="false"/>
             </column>
+            <column name="collection_id" type="bigserial">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_body" type="jsonb">
+                <constraints nullable="false"/>
+            </column>
             <column name="created_by" type="varchar(1000)">
                 <constraints nullable="false"/>
             </column>
@@ -16,12 +22,6 @@
             </column>
             <column name="updated_by" type="varchar(1000)"/>
             <column name="updated_timestamp" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
-            <column name="collection_id" type="bigserial">
-                <constraints nullable="false"/>
-            </column>
-            <column name="entity_body" type="jsonb">
                 <constraints nullable="false"/>
             </column>
         </createTable>

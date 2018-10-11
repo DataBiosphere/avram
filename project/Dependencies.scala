@@ -65,7 +65,6 @@ object Dependencies {
   val sam: ModuleID = "org.broadinstitute.dsde.sam-client" %% "sam" % samV
 
   val slickPg: ModuleID = "com.github.tminglei" %% "slick-pg" % "0.16.3"
-  val slickPgSpray: ModuleID = "com.github.tminglei" %% "slick-pg_spray-json" % "0.16.3"
   val slickPgCirce: ModuleID = "com.github.tminglei" %% "slick-pg_circe-json" % "0.16.3"
   val slick: ModuleID =     "com.typesafe.slick" %% "slick" % slickV
   val dbcp2: ModuleID = "org.apache.commons" % "commons-dbcp2" % dbcpV
