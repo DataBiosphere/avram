@@ -34,7 +34,7 @@ object CommonTestData {
 
   val configFactory = ConfigFactory.parseResources("app.conf").withFallback(ConfigFactory.load())
   private val dbcpDataSourceConfig = configFactory.as[DbcpDataSourceConfig]("dbcpDataSource")
-  val dataSource = new DbReference(dbcpDataSourceConfig)
+  val localDatabase = new DbReference(dbcpDataSourceConfig)
 
   val collectionName = "collection1"
   val samResource = "samResource1"

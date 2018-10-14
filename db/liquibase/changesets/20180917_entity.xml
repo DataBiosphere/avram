@@ -2,12 +2,10 @@
 <databaseChangeLog logicalFilePath="avram" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet logicalFilePath="avram" author="ansingh" id="add_entity_table">
         <createTable tableName="entity">
-            <column name="id" type="bigserial" autoIncrement="true">
+            <column name="id" type="bigserial">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(1000)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="name" type="varchar(1000)"/>
             <column name="collection_id" type="bigserial">
                 <constraints nullable="false"/>
             </column>
@@ -28,12 +26,11 @@
             </column>
         </createTable>
         <createIndex tableName="entity" indexName="IDX_entity_name">
-            <column name="name" type="varchar(1000)"/>
+            <column name="name" />
         </createIndex>
         <createIndex tableName="entity" indexName="IDX_entity_collection_id">
-            <column name="collection_id" type="bigserial"/>
+            <column name="collection_id" />
         </createIndex>
-        <addUniqueConstraint columnNames="name, collection_id" constraintName="IDX_ENTITY_COLLECTION_UNIQUE" tableName="entity"/>
         <addForeignKeyConstraint baseTableName="entity" baseColumnNames="collection_id" constraintName="FK_COLLECTION"
                                  referencedTableName="collection" referencedColumnNames="id"/>
     </changeSet>

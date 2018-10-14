@@ -12,10 +12,12 @@ import slick.dbio.DBIO
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
+
+
 abstract class BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
-  val database = Avram.database
+  private val database = Avram.database
   private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
@@ -50,8 +52,11 @@ abstract class BaseEndpoint {
   }
 
   def inTransaction[T](f: (DataAccess) => DBIO[T]): T = {
-    Await.result(database.inTransaction(f) , Duration.Inf)
+    Await.result(database.inTransaction(f) , Duration.apply(30, "second"))
   }
 
+  def getDbPoolStats: DbPoolStats = {
+    inTransaction(_.dbTotalConnections()).map(DbPoolStats(database.dbcpDataSource.getNumActive, database.dbcpDataSource.getNumIdle, _)).head
+  }
 
 }

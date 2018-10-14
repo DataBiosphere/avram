@@ -40,10 +40,5 @@ object Avram {
 
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 
-  /**
-    * DBCP data source provided only for introspection into the database pool statistics. If you're
-    * not working with database monitoring, don't use this!
-    */
-  val dbcpDataSource: BasicDataSource = database.dbcpDataSource
 }
 

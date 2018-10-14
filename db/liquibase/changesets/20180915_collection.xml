@@ -2,13 +2,13 @@
 <databaseChangeLog logicalFilePath="avram" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet author="ansingh" id="add_collection_table">
         <createTable tableName="collection">
-            <column name="id" type="bigserial" autoIncrement="true">
+            <column name="id" type="bigserial">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="varchar(1000)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="sam_resource" type="varchar(255)">
+            <column name="sam_resource" type="varchar(1000)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="varchar(1000)">
@@ -25,7 +25,7 @@
             </column>
         </createTable>
         <createIndex tableName="collection" indexName="IDX_collection_name">
-            <column name="name" type="varchar(1000)"/>
+            <column name="name"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

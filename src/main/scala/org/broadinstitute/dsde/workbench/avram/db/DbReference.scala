@@ -24,10 +24,10 @@ case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig) {
   }
   val dbcpDataSource: BasicDataSource = makeDbcpDataSource
 
-  val database = Database.forDataSource(dbcpDataSource, Option(dbcpDataSource.getMaxTotal), AsyncExecutor("Avram Executor", dataSourceConfig.slickNumThreads, dataSourceConfig.slickQueueSize))
+  private val database = Database.forDataSource(dbcpDataSource, Option(dbcpDataSource.getMaxTotal), AsyncExecutor("Avram Executor", dataSourceConfig.slickNumThreads, dataSourceConfig.slickQueueSize))
 
-  def inTransaction[T](f: (DataAccess) => DBIO[T], isolationLevel: TransactionIsolation = TransactionIsolation.ReadCommitted): Future[T] = {
-    database.run(f(dataAccess).transactionally.withTransactionIsolation(isolationLevel))
+  def inTransaction[T](f: (DataAccess) => DBIO[T]): Future[T] = {
+    database.run(f(dataAccess).transactionally)
   }
 }
 
@@ -44,7 +44,7 @@ class DataAccess(val profile: JdbcProfile) extends AllComponents {
     sql"select version()".as[String]
   }
 
-  def sqlDbFetchTimestampl() = {
+  def sqlDbFetchTimestamp() = {
     sql"select now()".as[String]
   }
 

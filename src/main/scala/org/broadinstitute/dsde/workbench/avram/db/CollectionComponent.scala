@@ -10,8 +10,8 @@ import scala.concurrent.ExecutionContext
 
 case class CollectionRecord(id: Long,
                             name: String,
-                            createdBy: String,
                             samResource: String,
+                            createdBy: String,
                             createdTimestamp: Timestamp,
                             updatedBy: String,
                             updatedTimestamp: Timestamp)
@@ -27,6 +27,8 @@ trait CollectionComponent extends AvramComponent {
     def updatedBy =              column[String]          ("updated_by",          O.Length(1000))
     def updatedTimestamp =       column[Timestamp]       ("updated_timestamp",   O.SqlType("TIMESTAMP(6)"))
 
+    //we use liquibase for DDL updates, not slick
+
     def * = (id, name, samResource, createdBy, createdTimestamp, updatedBy, updatedTimestamp) <> (CollectionRecord.tupled, CollectionRecord.unapply)
   }
 
@@ -35,7 +37,7 @@ trait CollectionComponent extends AvramComponent {
     def save(name: String, samResource: String, createdBy: String): DBIO[Int] = {
       val now = Timestamp.from(Instant.now)
       //currently the updatedBy and updatedTimestamp are the same as created at save time
-      collectionQuery += CollectionRecord(0, name, createdBy, samResource, now, createdBy, now)
+      collectionQuery += CollectionRecord(0, name, samResource, createdBy, now, createdBy, now)
     }
 
     def getCollectionByName(name: String)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
@@ -57,7 +59,7 @@ trait CollectionComponent extends AvramComponent {
 
     private def unmarshalCollections(collectionRecord: Seq[CollectionRecord]): Seq[Collection] = {
       collectionRecord map {
-        case (recs) => Collection(recs.name, recs.samResource, recs.createdBy, recs.createdTimestamp, recs.updatedBy, recs.updatedTimestamp)
+        case (recs) => Collection(recs.name, recs.samResource, recs.createdBy, recs.createdTimestamp.toInstant, recs.updatedBy, recs.updatedTimestamp.toInstant)
       }
     }
   }

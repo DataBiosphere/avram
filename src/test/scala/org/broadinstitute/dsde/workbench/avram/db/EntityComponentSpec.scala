@@ -15,12 +15,12 @@ class EntityComponentSpec extends TestComponent with FlatSpecLike {
     val collectionId =  dbFutureValue { _.collectionQuery.getCollectionIdByName(CommonTestData.collectionName) }.get
 
     // save an entity
-    dbFutureValue { _.entityQuery.save(CommonTestData.entityName, collectionId, CommonTestData.user1, CommonTestData.entityBody1) }
+    dbFutureValue { _.entityQuery.save(Some(CommonTestData.entityName), collectionId, CommonTestData.user1, CommonTestData.entityBody1) }
 
     // get the saved entity
     val saveResult = dbFutureValue { _.entityQuery.getEntityByName(CommonTestData.entityName, collectionId) }.get
 
-    saveResult.name shouldEqual CommonTestData.entityName
+    saveResult.name shouldEqual Some(CommonTestData.entityName)
     saveResult.collection shouldEqual collectionId
     saveResult.createdBy shouldEqual CommonTestData.user1
     saveResult.entityBody shouldEqual CommonTestData.entityBody1.noSpaces
