@@ -1,12 +1,13 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
 
-import org.broadinstitute.dsde.workbench.avram.api.Entity
 
 import AvramPostgresProfile.api._
 import io.circe.Json
 import java.sql.Timestamp
 import java.time.Instant
+
+import org.broadinstitute.dsde.workbench.avram.model.Entity
 
 import scala.concurrent.ExecutionContext
 

@@ -3,8 +3,8 @@ package org.broadinstitute.dsde.workbench.avram.db
 import java.sql.Timestamp
 import java.time.Instant
 
-import org.broadinstitute.dsde.workbench.avram.api.Collection
 import AvramPostgresProfile.api._
+import org.broadinstitute.dsde.workbench.avram.model.Collection
 
 import scala.concurrent.ExecutionContext
 

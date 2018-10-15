@@ -1,7 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
-import org.broadinstitute.dsde.workbench.avram.api.Collection
 import org.scalatest.FlatSpecLike
 
 class CollectionComponentSpec extends TestComponent with FlatSpecLike {

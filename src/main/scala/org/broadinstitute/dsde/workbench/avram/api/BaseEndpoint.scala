@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest
 import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.db.DataAccess
+import org.broadinstitute.dsde.workbench.avram.model.DbPoolStats
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import slick.dbio.DBIO
 
