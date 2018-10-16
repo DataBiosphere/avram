@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog logicalFilePath="avram" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet logicalFilePath="avram" author="ansingh" id="add_entity_table">
+    <changeSet author="ansingh" id="create_entity_table">
         <createTable tableName="entity">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(1000)"/>
-            <column name="collection_id" type="bigserial">
+            <column name="external_id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="external_collection_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
             <column name="entity_body" type="jsonb">
@@ -25,13 +27,13 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createIndex tableName="entity" indexName="IDX_entity_name">
-            <column name="name" />
+        <createIndex tableName="entity" indexName="IDX_entity_external_id">
+            <column name="external_id" />
         </createIndex>
-        <createIndex tableName="entity" indexName="IDX_entity_collection_id">
-            <column name="collection_id" />
+        <createIndex tableName="entity" indexName="IDX_entity_external_collection_id">
+            <column name="external_collection_id" />
         </createIndex>
-        <addForeignKeyConstraint baseTableName="entity" baseColumnNames="collection_id" constraintName="FK_COLLECTION"
-                                 referencedTableName="collection" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="entity" baseColumnNames="external_collection_id" constraintName="FK_COLLECTION"
+                                 referencedTableName="collection" referencedColumnNames="external_id"/>
     </changeSet>
 </databaseChangeLog>

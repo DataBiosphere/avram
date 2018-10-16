@@ -1,22 +1,25 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
+import java.util.UUID
+
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.scalatest.FlatSpecLike
 
 class CollectionComponentSpec extends TestComponent with FlatSpecLike {
 
   "CollectionComponent" should "save, get and delete collections" in isolatedDbTest {
-    dbFutureValue { _.collectionQuery.save(CommonTestData.collectionName, CommonTestData.samResource, CommonTestData.user1) }
+    val externalId = UUID.randomUUID()
+    dbFutureValue { _.collectionQuery.save(externalId, CommonTestData.samResource, CommonTestData.user1) }
 
-    val saveResult = dbFutureValue { _.collectionQuery.getCollectionByName(CommonTestData.collectionName) }.get
+    val saveResult = dbFutureValue { _.collectionQuery.getCollectionByExternalId(externalId) }.get
 
-    saveResult.name shouldEqual CommonTestData.collectionName
+    saveResult.externalId shouldEqual externalId
     saveResult.samResource shouldEqual CommonTestData.samResource
     saveResult.createdBy shouldEqual CommonTestData.user1
 
-    dbFutureValue { _.collectionQuery.deleteCollectionByName(CommonTestData.collectionName)}
+    dbFutureValue { _.collectionQuery.deleteCollectionByExternalId(externalId)}
 
-    val deleteResult = dbFutureValue { _.collectionQuery.getCollectionByName(CommonTestData.collectionName) }
+    val deleteResult = dbFutureValue { _.collectionQuery.getCollectionByExternalId(externalId) }
 
     deleteResult shouldEqual None
   }

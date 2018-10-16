@@ -1,6 +1,8 @@
 package org.broadinstitute.dsde.workbench.avram.db
 
 
+import java.util.UUID
+
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.scalatest.FlatSpecLike
 
@@ -8,19 +10,18 @@ class EntityComponentSpec extends TestComponent with FlatSpecLike {
 
   "EntityComponent" should "save an entity" in isolatedDbTest {
     // save a collection
-    dbFutureValue { _.collectionQuery.save(CommonTestData.collectionName, CommonTestData.samResource, CommonTestData.user1) }
-
-    // get that collection's id
-    val collectionId =  dbFutureValue { _.collectionQuery.getCollectionIdByName(CommonTestData.collectionName) }.get
+    val externalCollectionId = UUID.randomUUID()
+    dbFutureValue { _.collectionQuery.save(externalCollectionId, CommonTestData.samResource, CommonTestData.user1) }
 
     // save an entity
-    dbFutureValue { _.entityQuery.save(Some(CommonTestData.entityName), collectionId, CommonTestData.user1, CommonTestData.entityBody1) }
+    val externalEntityId = UUID.randomUUID()
+    dbFutureValue { _.entityQuery.save(externalEntityId, externalCollectionId, CommonTestData.user1, CommonTestData.entityBody1) }
 
     // get the saved entity
-    val saveResult = dbFutureValue { _.entityQuery.getEntityByName(CommonTestData.entityName, collectionId) }.get
+    val saveResult = dbFutureValue { _.entityQuery.getEntityByExternalId(externalEntityId, externalCollectionId) }.get
 
-    saveResult.name shouldEqual Some(CommonTestData.entityName)
-    saveResult.collection shouldEqual collectionId
+    saveResult.externalId shouldEqual externalEntityId
+    saveResult.externalCollectionId shouldEqual externalCollectionId
     saveResult.createdBy shouldEqual CommonTestData.user1
     saveResult.entityBody shouldEqual CommonTestData.entityBody1.noSpaces
   }

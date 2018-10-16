@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog logicalFilePath="avram" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="ansingh" id="add_collection_table">
+    <changeSet author="ansingh" id="create_collection_table">
         <createTable tableName="collection">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(1000)">
+            <column name="external_id" type="UUID">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="sam_resource" type="varchar(1000)">
@@ -24,8 +24,8 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createIndex tableName="collection" indexName="IDX_collection_name">
-            <column name="name"/>
+        <createIndex tableName="collection" indexName="IDX_collection_external_id">
+            <column name="external_id"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

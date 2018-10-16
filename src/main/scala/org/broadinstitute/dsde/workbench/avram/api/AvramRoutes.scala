@@ -1,17 +1,12 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import com.google.api.server.spi.config.{Api, ApiMethod}
-import io.circe.Json
-import java.time.Instant
 import java.util.logging.Logger
 import javax.servlet.http.HttpServletRequest
 
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.model.{DbPoolStats, Status}
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
-
-import scala.beans.BeanProperty
-import scala.concurrent.ExecutionContext.Implicits.global
 
 
 case class Pong()
