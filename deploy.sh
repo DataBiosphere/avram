@@ -4,20 +4,35 @@ set -x
 
 VAULT_TOKEN=$1
 GIT_BRANCH=$2
+TARGET_ENV=$3
 
-#need to get the environment from the branch name
-if [ "$GIT_BRANCH" == "develop" ]; then
-	ENVIRONMENT="dev"
-elif [ "$GIT_BRANCH" == "alpha" ]; then
-    ENVIRONMENT="alpha"
-elif [ "$GIT_BRANCH" == "staging" ]; then
-	ENVIRONMENT="staging"
-elif [ "$GIT_BRANCH" == "master" ]; then
-	ENVIRONMENT="prod"
-else
-	echo "Unknown Git branch $GIT_BRANCH"
-	#exit 1
+set +x
+if [ -z "$TARGET_ENV" ]; then
+    echo "TARGET_ENV argument not supplied; inferring from GIT_BRANCH '$GIT_BRANCH'."
+
+    if [ "$GIT_BRANCH" == "develop" ]; then
+        TARGET_ENV="dev"
+    elif [ "$GIT_BRANCH" == "alpha" ]; then
+        TARGET_ENV="alpha"
+    elif [ "$GIT_BRANCH" == "staging" ]; then
+        TARGET_ENV="staging"
+    elif [ "$GIT_BRANCH" == "master" ]; then
+        TARGET_ENV="prod"
+    else
+        echo "Git branch '$GIT_BRANCH' is not configured to automatically deploy to a target environment"
+        exit 1
+    fi
 fi
+
+if [[ "$TARGET_ENV" =~ ^(dev|alpha|staging|prod)$ ]]; then
+    ENVIRONMENT=${TARGET_ENV}
+else
+    echo "Unknown environment: $TARGET_ENV - must be one of [dev, alpha, staging, prod]"
+    exit 1
+fi
+
+echo "Deploying branch '${GIT_BRANCH}' to ${ENVIRONMENT}"
+set -x
 
 GOOGLE_PROJECT=broad-avram-$ENVIRONMENT
 
