@@ -64,9 +64,10 @@ object Dependencies {
 
   val sam: ModuleID = "org.broadinstitute.dsde.sam-client" %% "sam" % samV
 
-  val slick: ModuleID =     "com.typesafe.slick" %% "slick"                 % slickV
+  val slickPg: ModuleID = "com.github.tminglei" %% "slick-pg" % "0.16.3"
+  val slickPgCirce: ModuleID = "com.github.tminglei" %% "slick-pg_circe-json" % "0.16.3"
+  val slick: ModuleID =     "com.typesafe.slick" %% "slick" % slickV
   val dbcp2: ModuleID = "org.apache.commons" % "commons-dbcp2" % dbcpV
-  val liquibase: ModuleID = "org.liquibase"       % "liquibase-core"        % "3.5.3"
 
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
@@ -110,10 +111,11 @@ object Dependencies {
     mockServer,
 
     slick,
+    slickPg,
+    slickPgCirce,
     postgresDriver,
     socketFactory,
     dbcp2,
-    liquibase,
 
     workbenchUtil,
     workbenchModel,

@@ -1,9 +1,12 @@
 package org.broadinstitute.dsde.workbench.avram
 
+import com.typesafe.config.ConfigFactory
+import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import net.ceedubs.ficus.Ficus._
 import org.apache.commons.dbcp2.BasicDataSource
-import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
+import org.broadinstitute.dsde.workbench.avram.config.{AvramConfig, DbcpDataSourceConfig}
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
-import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
+import org.broadinstitute.dsde.workbench.avram.db.DbReference
 
 /**
   * Object providing access to all services. This merges configuration and service code to provide
@@ -32,14 +35,10 @@ import org.broadinstitute.dsde.workbench.avram.util.SlickDatabaseFactory
   * back to us and might be worth exploring.
   */
 object Avram {
-  private val databaseFactory = new SlickDatabaseFactory(AvramConfig.dbcpDataSourceConfig)
 
-  val database = databaseFactory.database
+  val database = DbReference(AvramConfig.dbcpDataSourceConfig)
+
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 
-  /**
-    * DBCP data source provided only for introspection into the database pool statistics. If you're
-    * not working with database monitoring, don't use this!
-    */
-  val dbcpDataSource: BasicDataSource = databaseFactory.dbcpDataSource
 }
+

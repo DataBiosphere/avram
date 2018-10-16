@@ -27,6 +27,8 @@ jobs:
     steps:
       - checkout
 
+      - run: cd db && ./run-liquibase.sh
+
       # Download and cache dependencies
       - restore_cache:
           keys:

@@ -1,11 +1,24 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
+import java.util.logging.Logger
 import javax.servlet.http.HttpServletRequest
+
 import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
+import org.broadinstitute.dsde.workbench.avram.db.DataAccess
+import org.broadinstitute.dsde.workbench.avram.model.DbPoolStats
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
+import slick.dbio.DBIO
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
+
 
 abstract class BaseEndpoint {
+
+  private val log = Logger.getLogger(getClass.getName)
+  private val database = Avram.database
   private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
@@ -38,4 +51,13 @@ abstract class BaseEndpoint {
     } yield tokenMatch.group(1)
     token.toRight(ErrorResponse(401, "Missing token"))
   }
+
+  def inTransaction[T](f: (DataAccess) => DBIO[T]): T = {
+    Await.result(database.inTransaction(f) , Duration.apply(30, "second"))
+  }
+
+  def getDbPoolStats: DbPoolStats = {
+    inTransaction(_.dbTotalConnections()).map(DbPoolStats(database.dbcpDataSource.getNumActive, database.dbcpDataSource.getNumIdle, _)).head
+  }
+
 }
