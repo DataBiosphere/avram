@@ -7,6 +7,8 @@ import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
 import org.broadinstitute.dsde.workbench.avram.db.DataAccess
 import org.broadinstitute.dsde.workbench.avram.model.DbPoolStats
+import scala.concurrent.ExecutionContext.Implicits.global
+import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import slick.dbio.DBIO
 
@@ -15,7 +17,7 @@ import scala.concurrent.duration.Duration
 
 
 
-abstract class BaseEndpoint {
+trait BaseEndpoint {
 
   private val log = Logger.getLogger(getClass.getName)
   private val database = Avram.database

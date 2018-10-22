@@ -7,6 +7,7 @@ import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import org.broadinstitute.dsde.workbench.avram.model.SamResource
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -37,7 +38,7 @@ object CommonTestData {
   val localDatabase = new DbReference(dbcpDataSourceConfig)
 
   val collectionName = "collection1"
-  val samResource = "samResource1"
+  val samResource = SamResource("samResource1")
   val user1 = "user1"
 
   val entityName = "entity1"
