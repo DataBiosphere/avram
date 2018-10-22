@@ -3,25 +3,24 @@ package org.broadinstitute.dsde.workbench.avram.model
 import java.time.Instant
 import java.util.UUID
 
-import scala.beans.BeanProperty
+case class Collection(externalId: UUID,
+                      samResource: SamResource,
+                      createdBy: String,
+                      createdTimestamp: Instant,
+                      updatedBy: String,
+                      updatedTimestamp: Instant)
 
+case class DbPoolStats(numActive: Int, numIdle: Int, totalConnections: Int)
 
+case class Entity(externalId: UUID,
+                  externalCollectionId: UUID,
+                  entityBody: String,
+                  createdBy: String,
+                  createdTimestamp: Instant,
+                  updatedBy: String,
+                  updatedTimestamp: Instant)
 
-case class Collection(@BeanProperty externalId: UUID,
-                      @BeanProperty samResource: String,
-                      @BeanProperty createdBy: String,
-                      @BeanProperty createdTimestamp: Instant,
-                      @BeanProperty updatedBy: String,
-                      @BeanProperty updatedTimestamp: Instant)
+case class SamResource(resourceName: String)
 
-case class Entity(@BeanProperty externalId: UUID,
-                  @BeanProperty externalCollectionId: UUID,
-                  @BeanProperty entityBody: String,
-                  @BeanProperty createdBy: String,
-                  @BeanProperty createdTimestamp: Instant,
-                  @BeanProperty updatedBy: String,
-                  @BeanProperty updatedTimestamp: Instant)
+case class Status(databaseStatus: String) // add other dependencies as we need them -- TODO: add Sam status
 
-case class Status(@BeanProperty databaseStatus: String) // add other dependencies as we need them -- TODO: add Sam status
-
-case class DbPoolStats(@BeanProperty numActive: Int, @BeanProperty numIdle: Int, @BeanProperty totalConnections: Int)

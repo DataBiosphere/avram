@@ -5,9 +5,8 @@ import java.time.Instant
 import java.util.UUID
 
 import AvramPostgresProfile.api._
-import org.broadinstitute.dsde.workbench.avram.model.Collection
+import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
 
-import scala.concurrent.ExecutionContext
 
 case class CollectionRecord(id: Long,
                             externalId: UUID,
@@ -35,25 +34,39 @@ trait CollectionComponent extends AvramComponent {
 
   object collectionQuery extends TableQuery(new CollectionTable(_)) {
 
-    def save(externalId: UUID, samResource: String, createdBy: String): DBIO[Int] = {
+    def save(externalId: UUID, samResource: SamResource, createdBy: String): DBIO[Collection] = {
       val now = Timestamp.from(Instant.now)
       //currently the updatedBy and updatedTimestamp are the same as created at save time
-      collectionQuery += CollectionRecord(0, externalId, samResource, createdBy, now, createdBy, now)
+      val collectionRecord = CollectionRecord(0, externalId, samResource.resourceName, createdBy, now, createdBy, now)
+      for {
+        _ <- collectionQuery += collectionRecord
+      } yield {
+        unmarshalCollection(collectionRecord)
+      }
     }
 
-    def getCollectionByExternalId(externalId: UUID)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
+    def getCollectionByExternalId(externalId: UUID): DBIO[Option[Collection]] = {
       collectionQuery.filter { _.externalId === externalId}.result map { recs: Seq[CollectionRecord] =>
         unmarshalCollections(recs).headOption
       }
     }
 
+    def getCollectionBySamResource(samResource: SamResource): DBIO[Option[Collection]] = {
+      collectionQuery.filter { _.samResource === samResource.resourceName }.result map { recs: Seq[CollectionRecord] =>
+        unmarshalCollections(recs).headOption
+      }
+    }
     def deleteCollectionByExternalId(externalId: UUID): DBIO[Int] = {
       collectionQuery.filter { _.externalId === externalId }.delete
     }
 
-    private def unmarshalCollections(collectionRecord: Seq[CollectionRecord]): Seq[Collection] = {
-      collectionRecord map {
-        case (recs) => Collection(recs.externalId, recs.samResource, recs.createdBy, recs.createdTimestamp.toInstant, recs.updatedBy, recs.updatedTimestamp.toInstant)
+    private def unmarshalCollection(rec: CollectionRecord): Collection = {
+      Collection(rec.externalId, SamResource(rec.samResource), rec.createdBy, rec.createdTimestamp.toInstant, rec.updatedBy, rec.updatedTimestamp.toInstant)
+    }
+
+    private def unmarshalCollections(recs: Seq[CollectionRecord]): Seq[Collection] = {
+      recs map {
+        case (rec) => unmarshalCollection(rec)
       }
     }
   }
