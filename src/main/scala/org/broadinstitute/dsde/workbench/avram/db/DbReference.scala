@@ -5,7 +5,7 @@ import org.broadinstitute.dsde.workbench.avram.config.DbcpDataSourceConfig
 import slick.dbio.DBIO
 import slick.jdbc.{JdbcProfile, TransactionIsolation}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import AvramPostgresProfile.api._
 
 case class DbReference(private val dataSourceConfig: DbcpDataSourceConfig) {

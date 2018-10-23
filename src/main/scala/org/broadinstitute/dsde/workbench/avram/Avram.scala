@@ -7,7 +7,7 @@ import org.apache.commons.dbcp2.BasicDataSource
 import org.broadinstitute.dsde.workbench.avram.config.{AvramConfig, DbcpDataSourceConfig}
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
-
+import scala.concurrent.ExecutionContext
 /**
   * Object providing access to all services. This merges configuration and service code to provide
   * one-stop access for endpoint implementations.

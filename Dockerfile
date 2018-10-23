@@ -10,7 +10,7 @@ ENV PATH /google-cloud-sdk/bin:$PATH
 RUN gcloud components update
 
 RUN mkdir -p /home/gcloud \
-&& curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.67.zip' > /tmp/appengine.zip \
+&& curl 'https://storage.googleapis.com/appengine-sdks/featured/appengine-java-sdk-1.9.64.zip' > /tmp/appengine.zip \
 && unzip -d /home/gcloud /tmp/appengine.zip \
 && rm /tmp/appengine.zip
 

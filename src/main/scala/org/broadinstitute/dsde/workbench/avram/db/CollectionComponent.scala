@@ -7,6 +7,8 @@ import java.util.UUID
 import AvramPostgresProfile.api._
 import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
 
+import scala.concurrent.ExecutionContext
+
 
 case class CollectionRecord(id: Long,
                             externalId: UUID,
@@ -34,7 +36,7 @@ trait CollectionComponent extends AvramComponent {
 
   object collectionQuery extends TableQuery(new CollectionTable(_)) {
 
-    def save(externalId: UUID, samResource: SamResource, createdBy: String): DBIO[Collection] = {
+    def save(externalId: UUID, samResource: SamResource, createdBy: String)(implicit executionContext: ExecutionContext): DBIO[Collection] = {
       val now = Timestamp.from(Instant.now)
       //currently the updatedBy and updatedTimestamp are the same as created at save time
       val collectionRecord = CollectionRecord(0, externalId, samResource.resourceName, createdBy, now, createdBy, now)
@@ -45,13 +47,13 @@ trait CollectionComponent extends AvramComponent {
       }
     }
 
-    def getCollectionByExternalId(externalId: UUID): DBIO[Option[Collection]] = {
+    def getCollectionByExternalId(externalId: UUID)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
       collectionQuery.filter { _.externalId === externalId}.result map { recs: Seq[CollectionRecord] =>
         unmarshalCollections(recs).headOption
       }
     }
 
-    def getCollectionBySamResource(samResource: SamResource): DBIO[Option[Collection]] = {
+    def getCollectionBySamResource(samResource: SamResource)(implicit executionContext: ExecutionContext): DBIO[Option[Collection]] = {
       collectionQuery.filter { _.samResource === samResource.resourceName }.result map { recs: Seq[CollectionRecord] =>
         unmarshalCollections(recs).headOption
       }
