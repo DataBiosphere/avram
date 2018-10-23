@@ -16,8 +16,7 @@ import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
 
 import org.broadinstitute.dsde.workbench.avram.model.SamResource
 import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
-
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 @WebServlet(name = "Collections", description = "Collections endpoints", urlPatterns = Array("/api/collections/v1/*"))
@@ -29,8 +28,9 @@ class CollectionsServlet extends HttpServlet with BaseEndpoint {
   //@throws[IOException]
   override def doGet(req: HttpServletRequest, resp: HttpServletResponse) = {
     resp.setContentType("text/plain")
-    val parameters = req.getPathInfo.split("/").toList
-    val collectionExternalId = UUID.fromString(parameters.head)
+    val parameter = req.getPathInfo.stripPrefix("/")
+    log.info("parameter:" + parameter)
+    val collectionExternalId = UUID.fromString(parameter)
     val collection = collectionsService.getCollection(collectionExternalId)
     resp.getWriter.append(collection.asJson.noSpaces)
   }

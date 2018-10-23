@@ -6,10 +6,10 @@ import org.broadinstitute.dsde.workbench.avram.api.BaseEndpoint
 import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
 import org.broadinstitute.dsde.workbench.model.WorkbenchException
 
-//import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext
 
 
-class CollectionsService extends BaseEndpoint {
+class CollectionsService(implicit executionContext: ExecutionContext) extends BaseEndpoint {
 
   def createCollection(samResource: SamResource, createdBy: String): Collection = {
     inTransaction { dataAccess =>
@@ -19,7 +19,7 @@ class CollectionsService extends BaseEndpoint {
   }
 
   def getCollection(externalId: UUID): Collection = {
-    inTransaction{ dataAccess =>
+    inTransaction { dataAccess =>
       dataAccess.collectionQuery.getCollectionByExternalId(externalId)
     } match {
       case Some(collection) => collection

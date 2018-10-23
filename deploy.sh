@@ -60,10 +60,10 @@ docker run -v $PWD:/app \
 docker run \
     -v $PWD:/app \
     ansingh7115/avram /bin/bash -c \
-    "cd /app; APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.67 sbt package"
+    "cd /app; APPENGINE_SDK_HOME=/home/gcloud/appengine-java-sdk-1.9.64 sbt package"
 
 # deploy app engine app
 docker run \
     -v $PWD:/app \
     ansingh7115/avram /bin/bash -c \
-    "/home/gcloud/appengine-java-sdk-1.9.67/bin/appcfg.sh --service_account_json_key_file=/app/deploy_account.json update /app/target/webapp"
+    "/home/gcloud/appengine-java-sdk-1.9.64/bin/appcfg.sh --service_account_json_key_file=/app/deploy_account.json update /app/target/webapp"

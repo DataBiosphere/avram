@@ -10,10 +10,12 @@ Revolver.settings
 Revolver.enableDebugging(port = 5051, suspend = false)
 
 enablePlugins(AppenginePlugin)
-//javaOptions in appengineDevServer in Compile -= (javaOptions in appengineDevServer in Compile).value.find(_.matches("-javaagent:.*"))
+javaOptions in appengineDevServer in Compile -= (javaOptions in appengineDevServer in Compile).value.find(_.matches("-javaagent:.*"))
 javaOptions in appengineDevServer in Compile ++= Seq(
   "-Duse_jetty9_runtime=true",
-  "-D--enable_all_permissions=true")
+  "-D--enable_all_permissions=true" //,
+  //"-javaagent:/Users/ansingh/appengine-java-sdk-1.9.64/lib/agent/appengine-agent.jar"
+)
 
 // When JAVA_OPTS are specified in the environment, they are usually meant for the application
 // itself rather than sbt, but they are not passed by default to the application, which is a forked

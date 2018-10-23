@@ -38,7 +38,7 @@ object Dependencies {
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   //val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
-  val javaxServlet = "javax.servlet" % "javax.servlet-api" % "4.0.1" % "provided"
+  val javaxServlet2 = "javax.servlet" % "javax.servlet-api" % "4.0.1" % "provided"
   val javaxWsRS = "javax.ws.rs" % "javax.ws.rs-api" % "2.0"
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
@@ -46,7 +46,7 @@ object Dependencies {
   val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
   val googleLogging = "com.google.cloud" % "google-cloud-logging" % "1.35.0"
 
-  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.67"
+  val googleAppEngine = "com.google.appengine" % "appengine-api-1.0-sdk" % "1.9.64"
 
   val googleOAuth2: ModuleID = "com.google.auth" % "google-auth-library-oauth2-http" % "0.9.1"
   val googleSourceRepositories: ModuleID = "com.google.apis" % "google-api-services-sourcerepo" % s"v1-rev21-$googleV" excludeAll(excludeGuavaJDK5)
@@ -96,7 +96,8 @@ object Dependencies {
     cats,
     enumeratum,
 
-    javaxServlet,
+    //javaxServlet,
+    javaxServlet2,
     javaxWsRS,
     sttp,
 
