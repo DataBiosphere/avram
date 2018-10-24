@@ -9,12 +9,13 @@ import io.circe.Decoder.Result
 import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
+import org.broadinstitute.dsde.workbench.avram.model.AvramException
 import org.broadinstitute.dsde.workbench.avram.util.{ErrorResponse, RestClient}
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  override def getUserStatus(token: String): Either[ErrorResponse, SamUserInfoResponse] = {
+  override def getUserStatus(token: String): Either[AvramException, SamUserInfoResponse] = {
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
     for {
       response <- request.send()
@@ -24,8 +25,8 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     } yield userInfo
   }
 
-  private def responseToErrorResponse(response: Response[String]): String => ErrorResponse = error => ErrorResponse(response.code, error)
-  private def circeErrorToErrorResponse(e: io.circe.Error): ErrorResponse = ErrorResponse(500, e.getMessage)
+  private def responseToErrorResponse(response: Response[String]): String => AvramException = error => AvramException(response.code, error)
+  private def circeErrorToErrorResponse(e: io.circe.Error): AvramException = AvramException(500, e.getMessage)
 
   // For the sake of comparison, this is what getUserStatus used to look like
   private def longhandResponseToEitherErrorOrUserInfo(response: Id[Response[String]]): Either[ErrorResponse, SamUserInfoResponse] = {
