@@ -3,6 +3,10 @@ package org.broadinstitute.dsde.workbench.avram.model
 import java.time.Instant
 import java.util.UUID
 
+
+case class AvramException(status: Int, message: String) extends Throwable
+
+
 case class Collection(externalId: UUID,
                       samResource: SamResource,
                       createdBy: String,

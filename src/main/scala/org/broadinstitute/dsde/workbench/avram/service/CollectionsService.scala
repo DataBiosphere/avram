@@ -1,29 +1,28 @@
 package org.broadinstitute.dsde.workbench.avram.service
 
 import java.util.UUID
+import javax.servlet.http.HttpServletResponse
 
-import org.broadinstitute.dsde.workbench.avram.api.BaseEndpoint
-import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
+import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
 import org.broadinstitute.dsde.workbench.model.WorkbenchException
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
-class CollectionsService(implicit executionContext: ExecutionContext) extends BaseEndpoint {
+class CollectionsService(implicit executionContext: ExecutionContext) extends AvramService {
 
-  def createCollection(samResource: SamResource, createdBy: String): Collection = {
-    inTransaction { dataAccess =>
+  def createCollection(samResource: SamResource, createdBy: String): Future[Either[AvramException, Collection]] = {
+    database.inTransaction { dataAccess =>
       val collectionExternalId = UUID.randomUUID()
       dataAccess.collectionQuery.save(collectionExternalId, samResource, createdBy)
-    }
+    } map(Right(_))
   }
 
-  def getCollection(externalId: UUID): Collection = {
-    inTransaction { dataAccess =>
+  def getCollection(externalId: UUID): Future[Either[AvramException, Collection]] = {
+    database.inTransaction { dataAccess =>
       dataAccess.collectionQuery.getCollectionByExternalId(externalId)
-    } match {
-      case Some(collection) => collection
-      case None => throw new WorkbenchException("Collection doesn't exist")
+    } map { collection =>
+      collection.toRight(AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found"))
     }
   }
 
