@@ -11,6 +11,8 @@ $ APPENGINE_SDK_HOME=/Applications/appengine-java-sdk-1.9.65/ sbt clean compile 
 $ docker/run-postgres.sh stop
 ```
 
+To run tests from IntelliJ, add the APPENGINE_SDK_HOME environment variable to your test configuration.
+
 ## Setting up local dev env
 
 1. Download the [appengine java sdk](https://cloud.google.com/appengine/docs/standard/java/download) and follow the instructions for setting your path.
