@@ -22,6 +22,7 @@ class GraphQLTempSpec extends FlatSpecLike {
     query MyProduct {
       entity(collectionId: "8e56d95f-8326-42ce-81f4-909624095ad2", entityId: "816284a9-cca7-4bd4-808f-c430c5bb697e") {
         createdBy
+        createdTimestamp
         updatedBy
       }
     }

@@ -5,6 +5,7 @@ import java.util.UUID
 
 import io.circe.Json.{JArray, JNumber, JString}
 import io.circe.{Json, JsonObject}
+import org.broadinstitute.dsde.workbench.avram.graphql.CustomScalarTypes
 import sangria.ast.{FieldDefinition, TypeDefinition}
 import sangria.schema._
 import sangria.macros.derive._
@@ -14,18 +15,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object GraphQL {
 
+  implicit val UUIDType = CustomScalarTypes.uuidType
+  implicit val InstantType = CustomScalarTypes.instantType
+
   val EntityType =
     deriveObjectType[Unit, Entity](
-      ExcludeFields("externalId", "externalCollectionId", "createdTimestamp", "updatedTimestamp")
     )
 
-  val collectionId = Argument("collectionId", StringType)
-  val entityId = Argument("entityId", StringType)
+  val collectionId = Argument("collectionId", UUIDType)
+  val entityId = Argument("entityId", UUIDType)
 
   val QueryType = ObjectType("Query", fields[EntityService, Unit](
     Field("entity", EntityType,
       arguments = collectionId :: entityId :: Nil,
-      resolve = c ⇒ c.ctx.getEntity(UUID.fromString(c arg collectionId), UUID.fromString(c.arg(entityId))))))
+      resolve = c ⇒ c.ctx.getEntity(c arg collectionId, c.arg(entityId)))))
 
 //    Field("entities", ListType(EntityType),
 //      description = Some("Returns a list of all available products."),
