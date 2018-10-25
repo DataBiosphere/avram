@@ -80,6 +80,9 @@ object Dependencies {
     "io.circe" %% "circe-parser"
   ).map(_ % circeVersion)
 
+  val graphql: ModuleID = "org.sangria-graphql" %% "sangria" % "1.4.2"
+  val graphqlMarshalling: ModuleID = "org.sangria-graphql" %% "sangria-circe" % "1.2.1"
+
   val rootDependencies = circe ++ Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
@@ -116,6 +119,8 @@ object Dependencies {
     postgresDriver,
     socketFactory,
     dbcp2,
+    graphql,
+    graphqlMarshalling,
 
     workbenchUtil,
     workbenchModel,
