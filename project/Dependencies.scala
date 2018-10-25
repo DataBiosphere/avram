@@ -1,6 +1,8 @@
 import sbt._
 
 object Dependencies {
+  val catsV           = "1.4.0"
+  val catsEffectV     = "1.0.0"
   val jacksonV        = "2.9.5"
   val googleV         = "1.23.0"
   val scalaLoggingV   = "3.9.0"
@@ -35,7 +37,8 @@ object Dependencies {
   val ravenLogback: ModuleID =   "com.getsentry.raven"        %  "raven-logback"   % "8.0.3"
   val scalaLogging: ModuleID =   "com.typesafe.scala-logging" %% "scala-logging"   % scalaLoggingV
   val ficus: ModuleID =          "com.iheart"                 %% "ficus"           % "1.4.3"
-  val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
+  val cats: ModuleID =           "org.typelevel"              %% "cats-core"       % catsV
+  val catsEffect: ModuleID =     "org.typelevel"              %% "cats-effect"     % catsEffectV
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
@@ -73,7 +76,8 @@ object Dependencies {
   val postgresDriver: ModuleID = "org.postgresql" % "postgresql" % postgresDriverV
   val socketFactory: ModuleID = "com.google.cloud.sql" % "postgres-socket-factory" % socketFactoryV
 
-  val sttp: ModuleID = "com.softwaremill.sttp" %% "core" % sttpV
+  val sttp: ModuleID =      "com.softwaremill.sttp" %% "core"                           % sttpV
+  val sttpCats: ModuleID =  "com.softwaremill.sttp" %% "async-http-client-backend-cats" % sttpV
 
   val circe: Seq[ModuleID] = Seq(
     "io.circe" %% "circe-core",
@@ -93,10 +97,12 @@ object Dependencies {
     scalaLogging,
     ficus,
     cats,
+    catsEffect,
     enumeratum,
 
     javaxServlet,
     sttp,
+    sttpCats,
 
     googleEndpointsFramework,
     googleEndpointsManagementControl,
