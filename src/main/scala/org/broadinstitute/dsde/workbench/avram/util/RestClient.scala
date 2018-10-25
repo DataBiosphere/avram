@@ -3,7 +3,9 @@ package org.broadinstitute.dsde.workbench.avram.util
 import java.net.URI
 import java.util.logging.Logger
 
-import com.softwaremill.sttp.{HttpURLConnectionBackend, Request, Uri, sttp}
+import cats.effect.IO
+import com.softwaremill.sttp.asynchttpclient.cats.AsyncHttpClientCatsBackend
+import com.softwaremill.sttp.{HttpURLConnectionBackend, Id, Request, SttpBackend, Uri, sttp}
 
 /**
   * Helpful stuff for making rest calls using sttp (https://github.com/softwaremill/sttp).
@@ -11,7 +13,9 @@ import com.softwaremill.sttp.{HttpURLConnectionBackend, Request, Uri, sttp}
 trait RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  implicit def sttpBackend = HttpURLConnectionBackend() // TODO: consider refactoring to allow use of SttpBackendStub in tests
+  // Temporarily don't put either of these in implicit scope so that functions can choose one
+  def sttpBackend: SttpBackend[Id, Nothing] = HttpURLConnectionBackend()
+  def catsSttpBackend: SttpBackend[IO, Nothing] = AsyncHttpClientCatsBackend[IO]()
 
   def buildAuthenticatedGetRequest(url: String, path: String, token: String): Request[String, Nothing] = {
     sttp.auth.bearer(token).get(buildUri(url, path))
