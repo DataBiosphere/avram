@@ -1,6 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
-import org.broadinstitute.dsde.workbench.avram.util.AvramResult.AvramResult
+import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
 trait SamDao {

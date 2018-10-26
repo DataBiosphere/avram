@@ -9,8 +9,7 @@ import io.circe.Decoder.Result
 import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
-import org.broadinstitute.dsde.workbench.avram.util.AvramResult.AvramResult
-import org.broadinstitute.dsde.workbench.avram.util.{ErrorResponse, RestClient}
+import org.broadinstitute.dsde.workbench.avram.util.{AvramResult, ErrorResponse, RestClient}
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
@@ -34,8 +33,8 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
 
     val request = buildAuthenticatedGetRequest(samUrl, s"/api/resources/v1/entity-collection/$samResource/action/$action", token)
     for {
-      response <- AvramResult { request.send() }
-      content <- AvramResult { response.body leftMap responseToErrorResponse(response) }
+      response <- AvramResult.fromIO(request.send())
+      content <- AvramResult.fromEither(response.body leftMap responseToErrorResponse(response))
     } yield content.toBoolean
   }
 
