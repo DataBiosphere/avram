@@ -1,7 +1,6 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import org.broadinstitute.dsde.workbench.avram.model.AvramException
-import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 
 trait SamDao {
   def getUserStatus(token: String): Either[AvramException, SamUserInfoResponse]

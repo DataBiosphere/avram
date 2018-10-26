@@ -5,12 +5,10 @@ import java.util.logging.Logger
 import cats._
 import cats.implicits._
 import com.softwaremill.sttp.{Id, _}
-import io.circe.Decoder.Result
-import io.circe.{DecodingFailure, Json, ParsingFailure}
 import io.circe.generic.auto._
 import io.circe.parser._
 import org.broadinstitute.dsde.workbench.avram.model.AvramException
-import org.broadinstitute.dsde.workbench.avram.util.{ErrorResponse, RestClient}
+import org.broadinstitute.dsde.workbench.avram.util.RestClient
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
@@ -29,19 +27,19 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private def circeErrorToErrorResponse(e: io.circe.Error): AvramException = AvramException(500, e.getMessage)
 
   // For the sake of comparison, this is what getUserStatus used to look like
-  private def longhandResponseToEitherErrorOrUserInfo(response: Id[Response[String]]): Either[ErrorResponse, SamUserInfoResponse] = {
-    response.body match {
-      case Left(error: String) => Left(ErrorResponse(response.code, error))
-      case Right(content: String) =>
-        parse(content) match {
-          case Left(error: ParsingFailure) => Left(ErrorResponse(500, error.message))
-          case Right(json: Json) =>
-            val result: Result[SamUserInfoResponse] = json.as[SamUserInfoResponse]
-            result match {
-              case Left(error: DecodingFailure) => Left(ErrorResponse(500, error.message))
-              case Right(userInfo: SamUserInfoResponse) => Right(userInfo)
-            }
-        }
-    }
-  }
+//  private def longhandResponseToEitherErrorOrUserInfo(response: Id[Response[String]]): Either[ErrorResponse, SamUserInfoResponse] = {
+//    response.body match {
+//      case Left(error: String) => Left(ErrorResponse(response.code, error))
+//      case Right(content: String) =>
+//        parse(content) match {
+//          case Left(error: ParsingFailure) => Left(ErrorResponse(500, error.message))
+//          case Right(json: Json) =>
+//            val result: Result[SamUserInfoResponse] = json.as[SamUserInfoResponse]
+//            result match {
+//              case Left(error: DecodingFailure) => Left(ErrorResponse(500, error.message))
+//              case Right(userInfo: SamUserInfoResponse) => Right(userInfo)
+//            }
+//        }
+//    }
+//  }
 }

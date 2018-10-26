@@ -37,8 +37,7 @@ object Dependencies {
   val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
-  //val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
-  val javaxServlet2 = "javax.servlet" % "javax.servlet-api" % "4.0.1" % "provided"
+  val javaxServlet = "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
   val javaxWsRS = "javax.ws.rs" % "javax.ws.rs-api" % "2.0"
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
@@ -96,8 +95,7 @@ object Dependencies {
     cats,
     enumeratum,
 
-    //javaxServlet,
-    javaxServlet2,
+    javaxServlet,
     javaxWsRS,
     sttp,
 

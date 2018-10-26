@@ -4,8 +4,6 @@ import java.util.UUID
 import javax.servlet.http.HttpServletResponse
 
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
-import org.broadinstitute.dsde.workbench.model.WorkbenchException
-
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -21,9 +19,7 @@ class CollectionsService(implicit executionContext: ExecutionContext) extends Av
   def getCollection(externalId: UUID): Future[Either[AvramException, Collection]] = {
     database.inTransaction { dataAccess =>
       dataAccess.collectionQuery.getCollectionByExternalId(externalId)
-    } map { collection =>
-      collection.toRight(AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found"))
-    }
+    } map (_.toRight(AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found")))
   }
 
 }
