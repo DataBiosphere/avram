@@ -54,7 +54,7 @@ object Dependencies {
 
 
   val scalaTest: ModuleID =  "org.scalatest"   %% "scalatest"       % scalaTestV % "test"
-  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.20.1"   % "test"
   val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
@@ -114,6 +114,7 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockito,
     mockServer,
 
     slick,

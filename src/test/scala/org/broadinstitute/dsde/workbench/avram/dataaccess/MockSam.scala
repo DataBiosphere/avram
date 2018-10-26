@@ -15,7 +15,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
   * how to communicate with Sam, we can feed interesting test cases to Avram ourselves without using
   * a mock.
   */
-@deprecated
+@deprecated("Migrate to SimpleMockSam", "11/1/18")
 trait MockSam extends BeforeAndAfterEach { self: Suite =>
 
   class MockSam(port: Int) extends ClientAndServer(port) {

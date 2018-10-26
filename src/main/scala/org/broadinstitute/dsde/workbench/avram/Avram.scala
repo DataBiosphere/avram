@@ -1,12 +1,18 @@
 package org.broadinstitute.dsde.workbench.avram
 
-import com.typesafe.config.ConfigFactory
-import net.ceedubs.ficus.readers.ArbitraryTypeReader._
-import net.ceedubs.ficus.Ficus._
-import org.apache.commons.dbcp2.BasicDataSource
-import org.broadinstitute.dsde.workbench.avram.config.{AvramConfig, DbcpDataSourceConfig}
+import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
+
+/**
+  * Definition of all services needed by web service endpoints. When deployed to app engine, these
+  * will be singleton objects. For tests, an object extending this trait can provide real
+  * implementations or mocks as needed.
+  */
+trait Avram {
+  def database: DbReference
+  def samDao: SamDao
+}
 
 /**
   * Object providing access to all services. This merges configuration and service code to provide
@@ -34,11 +40,8 @@ import org.broadinstitute.dsde.workbench.avram.db.DbReference
   * (https://cloud.google.com/endpoints/docs/frameworks/java/using-guice) might give that control
   * back to us and might be worth exploring.
   */
-object Avram {
-
+object Avram extends Avram{
   val database = DbReference(AvramConfig.dbcpDataSourceConfig)
-
-  val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
-
+  val samDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 }
 

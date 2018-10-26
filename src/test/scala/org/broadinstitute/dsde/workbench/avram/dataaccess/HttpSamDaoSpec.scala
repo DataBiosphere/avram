@@ -14,7 +14,7 @@ import org.scalatest.{FreeSpec, Matchers}
   *
   * The test cases in here should be migrated to a spec that uses a simpler mock Sam.
   */
-@deprecated
+@deprecated("TODO: Migrate tests to NewHttpSamDaoSpec", "11/1/18")
 class HttpSamDaoSpec extends FreeSpec with Matchers with MockSam {
 
   override def samPort = 9999
