@@ -3,7 +3,6 @@ package org.broadinstitute.dsde.workbench.avram.api
 import io.circe.generic.auto._
 import io.circe.syntax._
 import java.util.UUID
-import java.util.logging.Logger
 import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
 
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}

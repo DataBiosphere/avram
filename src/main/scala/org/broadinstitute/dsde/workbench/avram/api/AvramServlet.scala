@@ -22,16 +22,24 @@ trait AvramServlet {
   private val samDao = Avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
+  // TODO: Change the structures of registerOnComplete and handleAuthenticationRequest. Not doing it
+  // TODO: for PR #18 because we're going to be switching to using IO with AvramResult and this will
+  // TODO: likely be changed around anyway.
+
   def registerOnComplete[T](future: Future[T], request: HttpServletRequest, response: HttpServletResponse) = {
     future onComplete {
       case Success(result) => {
         response.setStatus(HttpServletResponse.SC_OK)
       }
       case Failure(e: AvramException) => {
+        log.severe(e.getMessage)
+        log.severe(e.getStackTrace.toString)
         response.setStatus(e.status)
         response.getWriter.write(e.message)
       }
       case Failure(e) => {
+        log.severe(e.getMessage)
+        log.severe(e.getStackTrace.toString)
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
         response.getWriter.write(e.getMessage)
       }
@@ -73,6 +81,6 @@ trait AvramServlet {
     } yield {
       tokenMatch.group(1)
     }
-    token.toRight(AvramException(HttpServletResponse.SC_NOT_FOUND, "Auth token not found."))
+    token.toRight(AvramException(HttpServletResponse.SC_UNAUTHORIZED, "User is not authorized."))
   }
 }
