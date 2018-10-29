@@ -1,7 +1,7 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
+import org.broadinstitute.dsde.workbench.avram.model.AvramException
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult.unsafeRun
-import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import org.mockserver.model.HttpResponse.response
 import org.scalatest.{FreeSpec, Matchers}
 
@@ -22,7 +22,7 @@ class HttpSamDaoSpec extends FreeSpec with Matchers with MockSam {
 
   "HttpSamDao" - {
     "should return 401 error when token is empty" in {
-      samDao.getUserStatus("") shouldEqual Left(ErrorResponse(401, "Unauthorized"))
+      samDao.getUserStatus("") shouldEqual Left(AvramException(401, "Unauthorized"))
     }
 
     "should return valid user response for authenticated user" in {
