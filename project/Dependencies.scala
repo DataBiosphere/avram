@@ -10,7 +10,8 @@ object Dependencies {
   val socketFactoryV  = "1.0.10"
   val dbcpV           = "2.5.0"
   val sttpV           = "1.3.1"
-  val circeVersion    = "0.9.3"
+  val circeV          = "0.10.0"
+  val javaxServletV   = "3.1.0"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -37,7 +38,7 @@ object Dependencies {
   val cats: ModuleID =           "org.typelevel"              %% "cats"            % "0.9.0"
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
-  val javaxServlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
+  val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
@@ -78,7 +79,7 @@ object Dependencies {
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser"
-  ).map(_ % circeVersion)
+  ).map(_ % circeV)
 
   val rootDependencies = circe ++ Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
