@@ -15,13 +15,14 @@ To run tests from IntelliJ, add the APPENGINE_SDK_HOME environment variable to y
 
 ## Setting up local dev env
 
-1. Download the [appengine java sdk](https://cloud.google.com/appengine/docs/standard/java/download) and follow the instructions for setting your path.
-2. Setup the path to the appengine sdk by doing one of the following:
+1. Setup git-secrets. See [hooks/README.md](hooks/README.md)
+2. Download the [appengine java sdk](https://cloud.google.com/appengine/docs/standard/java/download) and follow the instructions for setting your path.
+3. Setup the path to the appengine sdk by doing one of the following:
 	- set the environment variable: `APPENGINE_SDK_HOME`
 	- create the file appengine.properties in the avram directory and set the variable `sdkHome`
-3. run `docker run -v $PWD:/app -e GOOGLE_PROJ=broad-avram-dev -eSERVICE_VERSION=br1 -e INPUT_PATH=/app -e OUT_PATH=/app/src/main/resources -e VAULT_TOKEN=$(cat ~/.vault-token) -e ENVIRONMENT=dev broadinstitute/dsde-toolbox render-templates.sh`
-4. run `sbt`, then in sbt run `appengineDevServer`
-5. [test an endpoint locally](http://localhost:8080/avram/v1/ping)
+4. run `docker run -v $PWD:/app -e GOOGLE_PROJ=broad-avram-dev -eSERVICE_VERSION=br1 -e INPUT_PATH=/app -e OUT_PATH=/app/src/main/resources -e VAULT_TOKEN=$(cat ~/.vault-token) -e ENVIRONMENT=dev broadinstitute/dsde-toolbox render-templates.sh`
+5. run `sbt`, then in sbt run `appengineDevServer`
+6. [test an endpoint locally](http://localhost:8080/avram/v1/ping)
 
 
 ## On the dev environment
