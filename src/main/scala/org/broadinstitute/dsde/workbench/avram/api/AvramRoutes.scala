@@ -3,8 +3,9 @@ package org.broadinstitute.dsde.workbench.avram.api
 import java.util.logging.Logger
 
 import com.google.api.server.spi.config.{Api, ApiMethod, Named}
+import io.circe.Json
 import javax.servlet.http.HttpServletRequest
-import org.broadinstitute.dsde.workbench.avram.Avram
+import org.broadinstitute.dsde.workbench.avram.{Avram, api}
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{Entity, EntityResponse}
 import org.broadinstitute.dsde.workbench.avram.util.ErrorResponse
 import slick.jdbc.PostgresProfile.api._
@@ -34,6 +35,7 @@ object PongService {
   }
 }
 
+case class AvramJSONResponse(@BeanProperty response: Json)
 case class AvramStringResponse(@BeanProperty response: String)
 
 @Api(name = "avram", version = "v1", scopes = Array("https://www.googleapis.com/auth/userinfo.email"))
@@ -56,10 +58,12 @@ class AvramRoutes extends BaseEndpoint {
   def getEntities(request: HttpServletRequest,
                   @Named( "wsNamespace") wsNamespace: String,
                   @Named( "wsName") wsName: String,
-                  @Named( "entityType") entityType: String): AvramStringResponse = {
+                  @Named( "entityType") entityType: String): AvramJSONResponse = {
     // Explicitly use a Future to make sure the implicit ExecutionContext is being used
     handleAuthenticatedRequest(request) { userInfo => Avram.rawlsDao.queryEntitiesOfType(wsNamespace, wsName, entityType, userInfo.token) map { x =>
-      AvramStringResponse(x.asJson.toString)} }
+      val xx = x.asJson
+      print(xx)
+      api.AvramJSONResponse(xx)} }
   }
 
   // TODO: remove this endpoint when we have more meaningful ways to test database queries
