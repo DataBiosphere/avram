@@ -28,16 +28,23 @@ trait AvramServlet {
     def writeBody(body: T): Unit = {
       response.setStatus(HttpServletResponse.SC_OK)
       response.setContentType("application/json")
+      // CORS?
       response.getWriter.write(body.asJson.noSpaces)
     }
 
     def writeError(e: AvramException): Unit = {
-      log.log(Level.SEVERE, "Unhandled error", e)
+      // Dynamic log level based on response code?
+      log.log(Level.SEVERE, s"Responding with non-success status: ${e.status}", e)
+      // Log cause. TODO: look into a logging framework on top of java.util.logging
+      e.cause.foreach(t => log.log(Level.SEVERE, s"Caused by:", t))
+
       response.setStatus(e.status)
-      response.getWriter.write(e.message)
+      response.setContentType("text/plain")
+      // CORS?
+      response.getWriter.write(e.regrets)
     }
 
-    unsafeRun(writeBody, writeError, t => AvramException(500, t.getMessage)) {
+    unsafeRun(writeBody, writeError, t => AvramException(500, s"Unhandled error", t)) {
       for {
         userInfo <- AvramResult.fromEither(extractUserInfo(request))
         result <- f(userInfo)
@@ -52,7 +59,6 @@ trait AvramServlet {
     } yield {
       userInfo
     }
-
   }
 
   private def extractBearerToken(r: HttpServletRequest): Either[AvramException, String] = {

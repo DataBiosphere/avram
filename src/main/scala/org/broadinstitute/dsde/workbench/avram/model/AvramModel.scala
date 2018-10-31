@@ -4,7 +4,11 @@ import java.time.Instant
 import java.util.UUID
 
 
-case class AvramException(status: Int, message: String) extends Throwable
+case class AvramException(status: Int, regrets: String, cause: Option[Throwable]) extends Throwable(regrets)
+object AvramException {
+  def apply(status: Int, message: String): AvramException = AvramException(status, message, None)
+  def apply(status: Int, message: String, cause: Throwable): AvramException = AvramException(status, message, Option(cause))
+}
 
 
 case class Collection(externalId: UUID,

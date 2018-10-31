@@ -18,6 +18,13 @@ object AvramResult {
   def fromFuture[A](future: Future[A]): AvramResult[A] = fromIO(IO.fromFuture(IO(future)))
 
   /**
+    * Make an AvramException from a Try. If it is a Failure, returns an AvramResult with a copy of
+    * the provided AvramException where the cause is the Failure's exception. Primarily meant for
+    * interfacing with Java and other external code that may throw exceptions.
+    */
+  def fromTry[A](t: Try[A], e: AvramException): AvramResult[A] = t.fold(cause => fromError[A](e.copy(cause = Option(cause))), pure)
+
+  /**
     * Perform computations represented by an AvramResult and handle the result.
     *
     * @param onSuccess callback for successful computation
@@ -47,16 +54,5 @@ object AvramResult {
           case Right(thing) => onSuccess(thing)
         }
     }
-  }
-
-  /**
-    * Perform computations represented by an AvramResult and produce the result value. This will
-    * throw an exception for any errors raised by the computation.
-    *
-    * NOTE: This is a convenience for tests and is not intended for situations where proper error
-    * handling is required.
-    */
-  def unsafeRun[A](result: AvramResult[A]): A = {
-    unsafeRun(identity[A], e => throw e, e => throw e)(result)
   }
 }
