@@ -1,83 +1,50 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
-import io.circe.generic.auto._
-import io.circe.syntax._
+import org.json4s.JsonAST
+import org.json4s.JsonDSL._
+import org.json4s.native.JsonMethods.{compact, render}
 import org.mockserver.integration.ClientAndServer
-import org.mockserver.model.{Header, HttpRequest}
+import org.mockserver.model.{Header, HttpRequest, HttpResponse}
 import org.mockserver.model.HttpRequest.request
 import org.mockserver.model.HttpResponse.response
-import org.mockserver.model.NottableString.not
 import org.scalatest.{BeforeAndAfterEach, Suite}
-
-/**
-  * This MockSam does too much. We only need to make HTTP requests to test the possible result
-  * _types_ (JSON, errors, etc.) from sam, not every possible result. Once we know that Avram knows
-  * how to communicate with Sam, we can feed interesting test cases to Avram ourselves without using
-  * a mock.
-  */
-@deprecated
-trait MockSam extends BeforeAndAfterEach { self: Suite =>
-
-  class MockSam(port: Int) extends ClientAndServer(port) {
-    def addValidAuthentication(token: String, subjectId: String, email: String): Unit = {
-      mockSam.when(request()
-        .withMethod("GET")
-        .withPath("/register/user/v2/self/info")
-        .withHeader(new Header("Authorization", s"Bearer $token")))
-        .respond(response(SamUserInfoResponse(subjectId, email, enabled = true).asJson.toString))
-    }
-
-    def baseUrl: String = s"http://localhost:$port"
-  }
-
-  def samPort: Int
-  var mockSam: MockSam = _
-
-  override def beforeEach() {
-    mockSam = new MockSam(samPort)
-
-    // 401 on missing authorization header
-    mockSam.when(request()
-      .withMethod("GET")
-      .withPath("/register/user/v2/self/info")
-      .withHeaders(new Header(not("Authorization")))
-    ).respond(response("Unauthorized").withStatusCode(401))
-
-    // 401 on missing bearer token
-    mockSam.when(request()
-      .withMethod("GET")
-      .withPath("/register/user/v2/self/info")
-      .withHeader(new Header("Authorization", "Bearer"))
-    ).respond(response("Unauthorized").withStatusCode(401))
-
-    super.beforeEach()
-  }
-
-  override def afterEach() {
-    try super.afterEach()
-    finally mockSam.stop()
-  }
-}
 
 /**
   * Mix-in trait for managing a mock server for Sam. Includes convenience functions for building Sam
   * requests and expected responses.
-  *
-  * TODO: Migrate uses of existing MockSam to SimpleMockSam, remove existing MockSam, and rename SimpleMockSam to MockSam
   */
-trait SimpleMockSam extends BeforeAndAfterEach { self: Suite =>
+trait MockSam extends BeforeAndAfterEach { self: Suite =>
   class MockSam(port: Int) extends ClientAndServer(port) {
     def baseUrl: String = s"http://localhost:$port"
   }
 
   def samPort: Int
   var mockSam: MockSam = _
+
+  def buildUserStatusRequest(token: String): HttpRequest = {
+    request()
+      .withMethod("GET")
+      .withPath(s"/register/user/v2/self/info")
+      .withHeader(new Header("Authorization", s"Bearer $token".trim))
+  }
 
   def buildQueryActionRequest(samResource: String, action: String, token: String): HttpRequest = {
     request()
       .withMethod("GET")
       .withPath(s"/api/resources/v1/entity-collection/$samResource/action/$action")
       .withHeader(new Header("Authorization", s"Bearer $token".trim))
+  }
+
+  def buildUserStatusResponse(subjectId: String, email: String): HttpResponse = {
+    val response = buildResponse(
+      ("userSubjectId" -> subjectId) ~
+      ("userEmail" -> email) ~
+      ("enabled" -> true))
+    response
+  }
+
+  def buildResponse(json: JsonAST.JValue): HttpResponse = {
+    response(compact(render(json)))
   }
 
   override def beforeEach(): Unit = {

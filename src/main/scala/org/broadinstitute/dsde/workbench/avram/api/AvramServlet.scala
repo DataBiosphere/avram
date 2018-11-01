@@ -55,7 +55,7 @@ trait AvramServlet {
   private def extractUserInfo(r: HttpServletRequest): Either[AvramException, SamUserInfoResponse] = {
     for {
       token <- extractBearerToken(r)
-      userInfo <- samDao.getUserStatus(token)
+      userInfo <- samDao.getUserStatus_deprecated(token) // TODO: migrate away from deprecated function
     } yield {
       userInfo
     }
