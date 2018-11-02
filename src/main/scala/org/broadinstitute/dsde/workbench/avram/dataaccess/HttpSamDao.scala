@@ -3,7 +3,6 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 import java.util.logging.Logger
 
 import cats.implicits._
-import com.softwaremill.sttp.Response
 import io.circe.generic.auto._
 import io.circe.parser._
 import javax.servlet.http.HttpServletResponse
