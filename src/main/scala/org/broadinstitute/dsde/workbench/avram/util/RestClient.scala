@@ -13,9 +13,7 @@ import com.softwaremill.sttp.{HttpURLConnectionBackend, Id, Request, SttpBackend
 trait RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  // Temporarily don't put either of these in implicit scope so that functions can choose one
-  def sttpBackend: SttpBackend[Id, Nothing] = HttpURLConnectionBackend()
-  def catsSttpBackend: SttpBackend[IO, Nothing] = AsyncHttpClientCatsBackend[IO]()
+  implicit def catsSttpBackend: SttpBackend[IO, Nothing] = AsyncHttpClientCatsBackend[IO]()
 
   def buildAuthenticatedGetRequest(url: String, path: String, token: String): Request[String, Nothing] = {
     sttp.auth.bearer(token).get(buildUri(url, path))

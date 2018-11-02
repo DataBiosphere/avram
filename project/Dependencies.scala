@@ -85,6 +85,8 @@ object Dependencies {
     "io.circe" %% "circe-parser"
   ).map(_ % circeV)
 
+  val json4sNative = "org.json4s" %% "json4s-native" % "3.6.1" % "test"
+
   val rootDependencies = circe ++ Seq(
     // proactively pull in latest versions of Jackson libs, instead of relying on the versions
     // specified as transitive dependencies, due to OWASP DependencyCheck warnings for earlier versions.
@@ -92,6 +94,7 @@ object Dependencies {
     jacksonDatabind,
     jacksonCore,
     jacksonScalaModule,
+    json4sNative,
 
     ravenLogback,
     scalaLogging,

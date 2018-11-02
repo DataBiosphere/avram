@@ -2,7 +2,6 @@ package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import java.util.logging.Logger
 
-import cats._
 import cats.implicits._
 import io.circe.generic.auto._
 import io.circe.parser._
@@ -13,23 +12,17 @@ import org.broadinstitute.dsde.workbench.avram.util.{AvramResult, RestClient}
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
   private val log: Logger = Logger.getLogger(getClass.getName)
 
-  override def getUserStatus(token: String): Either[AvramException, SamUserInfoResponse] = {
-    // Temporarily put sttp backend in implicit scope here instead of RestClient
-    implicit val backend = sttpBackend
-
+  override def getUserStatus(token: String): AvramResult[SamUserInfoResponse] = {
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
     for {
-      response <- request.send()
-      content <- response.body                 leftMap errorResponseToAvramException(response.code)
-      json <- parse(content)                   leftMap circeErrorToAvramException
-      userInfo <- json.as[SamUserInfoResponse] leftMap circeErrorToAvramException
+      response <- AvramResult.fromIO(request.send())
+      content <- AvramResult.fromEither(response.body leftMap errorResponseToAvramException(response.code))
+      json <- AvramResult.fromEither(parse(content) leftMap circeErrorToAvramException)
+      userInfo <- AvramResult.fromEither(json.as[SamUserInfoResponse] leftMap circeErrorToAvramException)
     } yield userInfo
   }
 
   override def queryAction(samResource: String, action: String, token: String): AvramResult[Boolean] = {
-    // Temporarily put sttp backend in implicit scope here instead of RestClient
-    implicit val backend = catsSttpBackend
-
     val request = buildAuthenticatedGetRequest(samUrl, s"/api/resources/v1/entity-collection/$samResource/action/$action", token)
     for {
       response <- AvramResult.fromIO(request.send())
