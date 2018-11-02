@@ -4,9 +4,9 @@ import java.util.logging.Logger
 
 import cats._
 import cats.implicits._
-import com.softwaremill.sttp._
 import io.circe.generic.auto._
 import io.circe.parser._
+import javax.servlet.http.HttpServletResponse
 import org.broadinstitute.dsde.workbench.avram.model.AvramException
 import org.broadinstitute.dsde.workbench.avram.util.{AvramResult, RestClient}
 
@@ -20,9 +20,9 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     val request = buildAuthenticatedGetRequest(samUrl, "/register/user/v2/self/info", token)
     for {
       response <- request.send()
-      content <- response.body                 leftMap responseToErrorResponse(response)
-      json <- parse(content)                   leftMap circeErrorToErrorResponse
-      userInfo <- json.as[SamUserInfoResponse] leftMap circeErrorToErrorResponse
+      content <- response.body                 leftMap errorResponseToAvramException(response.code)
+      json <- parse(content)                   leftMap circeErrorToAvramException
+      userInfo <- json.as[SamUserInfoResponse] leftMap circeErrorToAvramException
     } yield userInfo
   }
 
@@ -33,10 +33,18 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     val request = buildAuthenticatedGetRequest(samUrl, s"/api/resources/v1/entity-collection/$samResource/action/$action", token)
     for {
       response <- AvramResult.fromIO(request.send())
-      content <- AvramResult.fromEither(response.body leftMap responseToErrorResponse(response))
+      content <- AvramResult.fromEither(response.body leftMap errorResponseToAvramException(response.code))
     } yield content.toBoolean
   }
 
-  private def responseToErrorResponse(response: Response[String]): String => AvramException = error => AvramException(response.code, error)
-  private def circeErrorToErrorResponse(e: io.circe.Error): AvramException = AvramException(500, e.getMessage)
+  private def errorResponseToAvramException(responseCode: Int) = (body: String) => {
+    responseCode match {
+      case HttpServletResponse.SC_UNAUTHORIZED => AvramException(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+      case _ =>
+        val cause = new Exception(s"Unhandled error from sam: $responseCode: $body")
+        AvramException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", cause)
+    }
+  }
+
+  private def circeErrorToAvramException(e: io.circe.Error) = AvramException(500, "Server error", e)
 }

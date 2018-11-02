@@ -1,7 +1,7 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
+import org.broadinstitute.dsde.workbench.avram.AvramResultSupport
 import org.broadinstitute.dsde.workbench.avram.model.AvramException
-import org.broadinstitute.dsde.workbench.avram.util.AvramResult.unsafeRun
 import org.mockserver.model.HttpResponse.response
 import org.scalatest.{FreeSpec, Matchers}
 
@@ -42,7 +42,7 @@ class HttpSamDaoSpec extends FreeSpec with Matchers with MockSam {
   *
   * TODO: Migrate test cases from HttpSamDaoSpec to here, remove existing HttpSamDaoSpec, and rename NewHttpSamDaoSpec to HttpSamDaoSpec
   */
-class NewHttpSamDaoSpec extends FreeSpec with Matchers with SimpleMockSam {
+class NewHttpSamDaoSpec extends FreeSpec with Matchers with AvramResultSupport with SimpleMockSam {
   override def samPort = 9999
   lazy val samDao: SamDao = new HttpSamDao(mockSam.baseUrl)
 
