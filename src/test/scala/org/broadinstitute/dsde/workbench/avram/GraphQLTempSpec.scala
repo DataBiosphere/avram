@@ -24,6 +24,9 @@ class GraphQLTempSpec extends FlatSpecLike {
         createdBy
         createdTimestamp
         updatedBy
+        entityBody {
+          a
+        }
       }
     }
   """
