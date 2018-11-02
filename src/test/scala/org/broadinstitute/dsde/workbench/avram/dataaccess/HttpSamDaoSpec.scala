@@ -20,7 +20,7 @@ class HttpSamDaoSpec extends FreeSpec with Matchers with AvramResultSupport with
     "getUserStatus" - {
       "should handle 401 response when authorization fails" in {
         val token = "test-token"
-        mockSam.when(buildUserStatusRequest(token)).respond(response("Unauthorized").withStatusCode(401))
+        mockSam.when(buildUserStatusRequest(token)).respond(response("Sam says go away").withStatusCode(401))
 
         // Sam response body is logged, not passed through to the Avram response
         the [AvramException] thrownBy unsafeRun(samDao.getUserStatus(token)) should have (

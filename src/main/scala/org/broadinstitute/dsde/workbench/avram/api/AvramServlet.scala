@@ -46,16 +46,16 @@ trait AvramServlet {
 
     unsafeRun(writeBody, writeError, t => AvramException(500, s"Unhandled error", t)) {
       for {
-        userInfo <- AvramResult.fromEither(extractUserInfo(request))
+        userInfo <- extractUserInfo(request)
         result <- f(userInfo)
       } yield result
     }
   }
 
-  private def extractUserInfo(r: HttpServletRequest): Either[AvramException, SamUserInfoResponse] = {
+  private def extractUserInfo(r: HttpServletRequest): AvramResult[SamUserInfoResponse] = {
     for {
-      token <- extractBearerToken(r)
-      userInfo <- samDao.getUserStatus(token).value.unsafeRunSync()
+      token <- AvramResult.fromEither(extractBearerToken(r))
+      userInfo <- samDao.getUserStatus(token)
     } yield {
       userInfo
     }
