@@ -1,10 +1,9 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
-import java.util
-import javax.ws.rs.core.{HttpHeaders, MediaType}
-import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
+import io.circe.generic.auto._
+import io.circe.parser._
 import org.broadinstitute.dsde.workbench.avram.Avram
-import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, MockSam, SamDao, SamUserInfoResponse}
+import org.broadinstitute.dsde.workbench.avram.dataaccess.{SamDao, SamUserInfoResponse}
 import org.broadinstitute.dsde.workbench.avram.db.{DbReference, TestComponent}
 import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
