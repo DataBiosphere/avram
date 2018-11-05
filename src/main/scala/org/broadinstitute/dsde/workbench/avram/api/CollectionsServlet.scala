@@ -5,9 +5,9 @@ import javax.servlet.http.{HttpServletResponse}
 
 import io.circe.generic.auto._
 import javax.ws.rs._
-import javax.ws.rs.core.{Context, HttpHeaders, Response}
+import javax.ws.rs.core.{HttpHeaders, Response}
 
-import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
+import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}
 import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 import org.broadinstitute.dsde.workbench.avram.Avram
@@ -40,11 +40,7 @@ class CollectionsServlet(avram: Avram) extends AvramServlet(avram) {
   @POST
   @Path("/{samResource}")
   def postCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("samResource") samResource: String): Response = {
-    log.severe("we're in postCollection")
-    log.severe("bearerToken: " + bearerToken)
-    log.severe("samResource: " + samResource)
     handleAuthenticatedRequest(bearerToken) { userInfo =>
-      log.severe("f is running with userInfo: " + userInfo)
       for {
         collection <- collectionsService.createCollection(SamResource(samResource), userInfo.userEmail)
       } yield collection

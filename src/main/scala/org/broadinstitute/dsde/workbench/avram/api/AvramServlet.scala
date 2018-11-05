@@ -4,8 +4,7 @@ import java.util.logging.{Level, Logger}
 
 import io.circe.Encoder
 import io.circe.syntax._
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import javax.ws.rs.core.{HttpHeaders, Response}
+import javax.ws.rs.core.Response
 import javax.ws.rs.core.Response.Status
 
 import org.broadinstitute.dsde.workbench.avram.Avram
@@ -45,44 +44,30 @@ abstract class AvramServlet(avram: Avram) {
         .entity(e.regrets)
         .build()
     }
-    log.severe("inside handleAuthenticatedRequest")
 
-    unsafeRun(writeBody, writeError, t => AvramException(500, s"Unhandled error", t)) {
-      log.severe("inside unsafe run")
+    unsafeRun(writeBody, writeError, t => AvramException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode, s"Unhandled error", t)) {
       for {
-          //extractUserInfo(bearerToken)
-        result <- f((SamUserInfoResponse("106178257721738143632","ansingh@broadinstitute.org",true)))
+        userInfo <-  extractUserInfo(bearerToken)
+        result <- f(userInfo)
       } yield result
     }
   }
 
   private def extractUserInfo(bearerToken: String): AvramResult[SamUserInfoResponse] = {
-    log.severe("we're inside extractUserInfo" + bearerToken)
     for {
-      token <- {
-        val t = AvramResult.fromEither(extractBearerToken(bearerToken))
-        log.severe("ttttt: " + t)
-        t
-      }
+      token <- AvramResult.fromEither(extractBearerToken(bearerToken))
       userInfo <- samDao.getUserStatus(token)
     } yield {
-      log.severe("userInfo: " + userInfo)
       userInfo
     }
   }
 
   private def extractBearerToken(bearerToken: String): Either[AvramException, String] = {
-    log.severe("we're inside extractBearerToken: " + bearerToken)
     val token = for {
       tokenMatch <- bearerPattern.findPrefixMatchOf(bearerToken)
     } yield {
-      log.severe("TOKEN VALUE: " + bearerToken)
-      log.severe("tokenMatch: " + tokenMatch)
-      log.severe("tokenMatch.group(1): " + tokenMatch.group(1))
-
       tokenMatch.group(1)
     }
-    log.severe("TOKEN FINAL: " + token)
-    token.toRight(AvramException(HttpServletResponse.SC_UNAUTHORIZED, "User is not authorized."))
+    token.toRight(AvramException(Response.Status.UNAUTHORIZED.getStatusCode, "User is not authorized."))
   }
 }

@@ -17,7 +17,6 @@ class CollectionsService(implicit executionContext: ExecutionContext) extends Av
   }
 
   def getCollection(externalId: UUID): AvramResult[Collection] = {
-    log.severe("externalId: " + externalId)
     for {
       result <- AvramResult.fromFuture(database.inTransaction(_.collectionQuery.getCollectionByExternalId(externalId)))
       collection <- AvramResult.fromOption(result, AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found"))
