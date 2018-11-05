@@ -23,7 +23,6 @@ object Dependencies {
   val samV =  "1.0-5cdffb4"
 
   val excludeAkkaActor =        ExclusionRule(organization = "com.typesafe.akka", name = "akka-actor_2.12")
-
   val excludeGuavaJDK5 =        ExclusionRule(organization = "com.google.guava", name = "guava-jdk5")
   val excludeWorkbenchUtil =    ExclusionRule(organization = "org.broadinstitute.dsde.workbench", name = "workbench-util_2.12")
   val excludeWorkbenchModel =   ExclusionRule(organization = "org.broadinstitute.dsde.workbench", name = "workbench-model_2.12")
@@ -43,6 +42,15 @@ object Dependencies {
 
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
 
+ // val javaxServlet: ModuleID = "javax.ws.rs" % "javax.ws.rs-api" % "2.1" % "provided"  <--Kept getting an error with this one
+ // val javaxServlet: ModuleID = "javax.ws.rs" % "javax.ws.rs-api" % "2.1" % "provided" artifacts( Artifact("javax.ws.rs-api", "jar", "jar"))
+ // val jerseyCore: ModuleID = "com.sun.jersey" % "jersey-core" % "1.19.4"
+  val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % "2.26"
+//  val jerseyServlet: ModuleID = 	"com.sun.jersey" % "jersey-servlet" % "1.13"
+//  val jerseyJson: ModuleID = "com.sun.jersey" % "jersey-json" % "1.8"
+  val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % "2.26"
+  val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % "2.26"
+
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
   val googleEndpointsAuth = "com.google.endpoints" % "endpoints-framework-auth" % "1.0.8"
@@ -55,7 +63,7 @@ object Dependencies {
 
 
   val scalaTest: ModuleID =  "org.scalatest"   %% "scalatest"       % scalaTestV % "test"
-  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.20.1"   % "test"
   val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
@@ -104,6 +112,9 @@ object Dependencies {
     enumeratum,
 
     javaxServlet,
+    jerseyServer,
+    glassFish,
+    glassFishInject,
     sttp,
     sttpCats,
 
@@ -118,6 +129,7 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockito,
     mockServer,
 
     slick,

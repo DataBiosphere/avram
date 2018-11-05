@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 
 class CollectionsService(implicit executionContext: ExecutionContext) extends AvramService {
@@ -17,6 +17,7 @@ class CollectionsService(implicit executionContext: ExecutionContext) extends Av
   }
 
   def getCollection(externalId: UUID): AvramResult[Collection] = {
+    log.severe("externalId: " + externalId)
     for {
       result <- AvramResult.fromFuture(database.inTransaction(_.collectionQuery.getCollectionByExternalId(externalId)))
       collection <- AvramResult.fromOption(result, AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found"))

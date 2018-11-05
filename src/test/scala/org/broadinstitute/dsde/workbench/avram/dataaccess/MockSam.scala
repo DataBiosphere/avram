@@ -1,6 +1,8 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
-import org.json4s.JsonAST
+import io.circe.generic.auto._
+import io.circe.syntax._
+import org.json4s.{DefaultFormats, JsonAST}
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods.{compact, render}
 import org.mockserver.integration.ClientAndServer
@@ -17,6 +19,7 @@ trait MockSam extends BeforeAndAfterEach { self: Suite =>
   class MockSam(port: Int) extends ClientAndServer(port) {
     def baseUrl: String = s"http://localhost:$port"
   }
+  implicit val formats = DefaultFormats
 
   def samPort: Int
   var mockSam: MockSam = _

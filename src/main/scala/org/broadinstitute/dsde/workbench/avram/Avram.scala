@@ -3,6 +3,14 @@ package org.broadinstitute.dsde.workbench.avram
 import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
+
+
+
+trait Avram {
+  def database: DbReference
+  def samDao: SamDao
+}
+
 /**
   * Object providing access to all services. This merges configuration and service code to provide
   * one-stop access for endpoint implementations.
@@ -29,7 +37,7 @@ import org.broadinstitute.dsde.workbench.avram.db.DbReference
   * (https://cloud.google.com/endpoints/docs/frameworks/java/using-guice) might give that control
   * back to us and might be worth exploring.
   */
-object Avram {
+object Avram extends Avram {
 
   val database = DbReference(AvramConfig.dbcpDataSourceConfig)
 

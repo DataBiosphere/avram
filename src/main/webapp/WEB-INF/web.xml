@@ -3,10 +3,18 @@
 <web-app>
     <servlet>
         <servlet-name>controlServlet</servlet-name>
-        <servlet-class>org.broadinstitute.dsde.workbench.avram.api.CollectionsServlet</servlet-class>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>org.broadinstitute.dsde.workbench.avram.api</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>controlServlet</servlet-name>
-        <url-pattern>/api/collections/v1/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
