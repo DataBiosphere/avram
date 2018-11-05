@@ -41,13 +41,7 @@ object Dependencies {
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
-
- // val javaxServlet: ModuleID = "javax.ws.rs" % "javax.ws.rs-api" % "2.1" % "provided"  <--Kept getting an error with this one
- // val javaxServlet: ModuleID = "javax.ws.rs" % "javax.ws.rs-api" % "2.1" % "provided" artifacts( Artifact("javax.ws.rs-api", "jar", "jar"))
- // val jerseyCore: ModuleID = "com.sun.jersey" % "jersey-core" % "1.19.4"
   val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % "2.26"
-//  val jerseyServlet: ModuleID = 	"com.sun.jersey" % "jersey-servlet" % "1.13"
-//  val jerseyJson: ModuleID = "com.sun.jersey" % "jersey-json" % "1.8"
   val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % "2.26"
   val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % "2.26"
 

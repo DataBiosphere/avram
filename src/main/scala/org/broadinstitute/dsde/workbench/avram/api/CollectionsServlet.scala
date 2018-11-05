@@ -1,10 +1,11 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import java.util.UUID
-import javax.servlet.http.{HttpServletResponse}
+import javax.servlet.http.HttpServletResponse
 
 import io.circe.generic.auto._
 import javax.ws.rs._
+import javax.ws.rs.core.Response.Status
 import javax.ws.rs.core.{HttpHeaders, Response}
 
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}
@@ -19,12 +20,6 @@ class CollectionsServlet(avram: Avram) extends AvramServlet(avram) {
   def this() = this(Avram)
 
   private val collectionsService = new CollectionsService()
-
-  @GET
-  @Produces(Array("text/plain"))
-  def getTest(): String = {
-   "Yohoho it's a pirate's life for me."
-  }
 
   @GET
   @Path("/{externalId}")
