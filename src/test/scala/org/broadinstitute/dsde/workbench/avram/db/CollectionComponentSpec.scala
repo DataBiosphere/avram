@@ -5,9 +5,9 @@ import java.util.UUID
 import org.broadinstitute.dsde.workbench.avram.CommonTestData
 import org.scalatest.FlatSpecLike
 
-class CollectionComponentSpec extends TestComponent with FlatSpecLike {
+class CollectionComponentSpec extends TestComponent with FlatSpecLike with DatabaseWipe {
 
-  "CollectionComponent" should "save, get and delete collections" in isolatedDbTest {
+  "CollectionComponent" should "save, get and delete collections" in {
     val externalId = UUID.randomUUID()
     dbFutureValue { _.collectionQuery.save(externalId, CommonTestData.samResource, CommonTestData.user1) }
 

@@ -3,12 +3,14 @@ package org.broadinstitute.dsde.workbench.avram
 import org.broadinstitute.dsde.workbench.avram.config.AvramConfig
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{HttpSamDao, SamDao}
 import org.broadinstitute.dsde.workbench.avram.db.DbReference
+import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
 
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait Avram {
   def database: DbReference
   def samDao: SamDao
+  def collectionService: CollectionsService
 }
 
 /**
@@ -43,5 +45,6 @@ object Avram extends Avram {
 
   val samDao: SamDao = new HttpSamDao(AvramConfig.sam.baseUrl)
 
+  val collectionsService = new CollectionsService(samDao)
 }
 

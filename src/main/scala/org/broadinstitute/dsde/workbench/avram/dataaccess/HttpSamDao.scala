@@ -6,7 +6,7 @@ import cats.implicits._
 import io.circe.generic.auto._
 import io.circe.parser._
 import javax.servlet.http.HttpServletResponse
-import org.broadinstitute.dsde.workbench.avram.model.AvramException
+import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}
 import org.broadinstitute.dsde.workbench.avram.util.{AvramResult, RestClient}
 
 class HttpSamDao(samUrl: String) extends SamDao with RestClient {
@@ -22,8 +22,8 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
     } yield userInfo
   }
 
-  override def queryAction(samResource: String, action: String, token: String): AvramResult[Boolean] = {
-    val request = buildAuthenticatedGetRequest(samUrl, s"/api/resources/v1/entity-collection/$samResource/action/$action", token)
+  override def queryAction(samResource: SamResource, action: String, token: String): AvramResult[Boolean] = {
+    val request = buildAuthenticatedGetRequest(samUrl, s"/api/resources/v1/entity-collection/${samResource.resourceName}/action/$action", token)
     for {
       response <- AvramResult.fromIO(request.send())
       content <- AvramResult.fromEither(response.body leftMap errorResponseToAvramException(response.code))
@@ -32,7 +32,9 @@ class HttpSamDao(samUrl: String) extends SamDao with RestClient {
 
   private def errorResponseToAvramException(responseCode: Int) = (body: String) => {
     responseCode match {
-      case HttpServletResponse.SC_UNAUTHORIZED => AvramException(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+      case code @ HttpServletResponse.SC_UNAUTHORIZED => AvramException(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized", new Exception(s"Sam responded with $code: $body"))
+      // TODO: only translate 404 to 401 when checking user status
+      case code @ HttpServletResponse.SC_NOT_FOUND => AvramException(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized", new Exception(s"Sam responded with $code: $body"))
       case _ =>
         val cause = new Exception(s"Unhandled error from sam: $responseCode: $body")
         AvramException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", cause)

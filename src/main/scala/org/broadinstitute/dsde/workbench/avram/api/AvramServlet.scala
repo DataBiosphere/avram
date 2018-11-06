@@ -7,8 +7,7 @@ import io.circe.syntax._
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.Response.Status
 
-import org.broadinstitute.dsde.workbench.avram.Avram
-import org.broadinstitute.dsde.workbench.avram.dataaccess.SamUserInfoResponse
+import org.broadinstitute.dsde.workbench.avram.{Avram, UserInfo}
 import org.broadinstitute.dsde.workbench.avram.model.AvramException
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult.unsafeRun
@@ -25,9 +24,10 @@ abstract class AvramEndpoint(avram: Avram) {
   private val bearerPattern = """(?i)bearer (.*)""".r
 
   def handleAuthenticatedRequest[T](authorizationHeader: String)
-                                   (f: SamUserInfoResponse => AvramResult[T])
+                                   (f: UserInfo => AvramResult[T])
                                    (implicit encoder: Encoder[T]): Response = {
     def writeBody(body: T): Response = {
+      // CORS?
       Response
         .status(Status.OK)
         .entity(body.asJson.noSpaces)
@@ -39,6 +39,7 @@ abstract class AvramEndpoint(avram: Avram) {
       log.log(Level.SEVERE, s"Responding with non-success status: ${e.status}", e)
       // Log cause. TODO: look into a logging framework on top of java.util.logging
       e.cause.foreach(t => log.log(Level.SEVERE, s"Caused by:", t))
+      // CORS?
       Response
         .status(e.status)
         .entity(e.regrets)
@@ -47,18 +48,11 @@ abstract class AvramEndpoint(avram: Avram) {
 
     unsafeRun(writeBody, writeError, t => AvramException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode, s"Unhandled error", t)) {
       for {
-        userInfo <-  extractUserInfo(authorizationHeader)
+        token <- AvramResult.fromEither(extractBearerToken(authorizationHeader))
+        samUserInfo <- samDao.getUserStatus(token)
+        userInfo <- AvramResult.pure(UserInfo(samUserInfo, token))
         result <- f(userInfo)
       } yield result
-    }
-  }
-
-  private def extractUserInfo(authorizationHeader: String): AvramResult[SamUserInfoResponse] = {
-    for {
-      token <- AvramResult.fromEither(extractBearerToken(authorizationHeader))
-      userInfo <- samDao.getUserStatus(token)
-    } yield {
-      userInfo
     }
   }
 
