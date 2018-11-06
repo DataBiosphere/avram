@@ -43,7 +43,7 @@ object Dependencies {
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
   val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % "2.26"
   val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % "2.26"
-  //val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % "2.26"
+  val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % "2.26"
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
@@ -108,7 +108,7 @@ object Dependencies {
     javaxServlet,
     jerseyServer,
     glassFish,
- //   glassFishInject,
+    glassFishInject,
     sttp,
     sttpCats,
 
