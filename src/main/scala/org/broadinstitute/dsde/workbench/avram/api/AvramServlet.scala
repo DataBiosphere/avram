@@ -24,7 +24,7 @@ abstract class AvramServlet(avram: Avram) {
   private val samDao = avram.samDao
   private val bearerPattern = """(?i)bearer (.*)""".r
 
-  def handleAuthenticatedRequest[T](bearerToken: String)
+  def handleAuthenticatedRequest[T](authorizationHeader: String)
                                    (f: SamUserInfoResponse => AvramResult[T])
                                    (implicit encoder: Encoder[T]): Response = {
     def writeBody(body: T): Response = {
@@ -47,24 +47,24 @@ abstract class AvramServlet(avram: Avram) {
 
     unsafeRun(writeBody, writeError, t => AvramException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode, s"Unhandled error", t)) {
       for {
-        userInfo <-  extractUserInfo(bearerToken)
+        userInfo <-  extractUserInfo(authorizationHeader)
         result <- f(userInfo)
       } yield result
     }
   }
 
-  private def extractUserInfo(bearerToken: String): AvramResult[SamUserInfoResponse] = {
+  private def extractUserInfo(authorizationHeader: String): AvramResult[SamUserInfoResponse] = {
     for {
-      token <- AvramResult.fromEither(extractBearerToken(bearerToken))
+      token <- AvramResult.fromEither(extractBearerToken(authorizationHeader))
       userInfo <- samDao.getUserStatus(token)
     } yield {
       userInfo
     }
   }
 
-  private def extractBearerToken(bearerToken: String): Either[AvramException, String] = {
+  private def extractBearerToken(authorizationHeader: String): Either[AvramException, String] = {
     val token = for {
-      tokenMatch <- bearerPattern.findPrefixMatchOf(bearerToken)
+      tokenMatch <- bearerPattern.findPrefixMatchOf(authorizationHeader)
     } yield {
       tokenMatch.group(1)
     }
