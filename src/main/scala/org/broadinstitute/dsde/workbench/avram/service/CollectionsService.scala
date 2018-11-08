@@ -18,11 +18,6 @@ class CollectionsService(val samDao: SamDao)(implicit executionContext: Executio
       _ <- checkAuthorization(samResource, "write", createdBy.token)
       collection <- saveCollection(samResource, createdBy)
     } yield collection
-/*
-    ifAuthorized(samResource, "write", createdBy.token) {
-      saveCollection(samResource, createdBy)
-    }
-*/
   }
 
   def getCollection(externalId: UUID, userInfo: UserInfo): AvramResult[Collection] = {
@@ -30,12 +25,6 @@ class CollectionsService(val samDao: SamDao)(implicit executionContext: Executio
       collection <- fetchCollection(externalId)
       _ <- checkAuthorization(collection.samResource, "read", userInfo.token)
     } yield collection
-/*
-    for {
-      collection <- fetchCollection(externalId)
-      result <- ifAuthorized(collection.samResource, "read", userInfo.token) { AvramResult.pure(collection) }
-    } yield result
-*/
   }
 
   private def fetchCollection(externalId: UUID): AvramResult[Collection] = {

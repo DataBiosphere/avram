@@ -20,12 +20,4 @@ trait AvramService {
       result <- if (authorized) AvramResult.pure(()) else AvramResult.fromError[Unit](AvramException(HttpServletResponse.SC_FORBIDDEN, "Permission denied"))
     } yield result
   }
-
-  def ifAuthorized[A](samResource: SamResource, action: String, token: String)
-                     (f: => AvramResult[A]): AvramResult[A] = {
-    for {
-      authorized <- samDao.queryAction(samResource, action, token)
-      result <- if (authorized) f else AvramResult.fromError[A](AvramException(HttpServletResponse.SC_FORBIDDEN, "Permission denied"))
-    } yield result
-  }
 }
