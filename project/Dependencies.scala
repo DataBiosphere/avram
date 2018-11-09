@@ -14,6 +14,7 @@ object Dependencies {
   val sttpV           = "1.3.1"
   val circeV          = "0.10.0"
   val javaxServletV   = "3.1.0"
+  val jerseyV         = "2.26"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -41,9 +42,9 @@ object Dependencies {
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
-  val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % "2.26"
-  val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % "2.26"
-  val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % "2.26"
+  val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % jerseyV
+  val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % jerseyV
+  val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % jerseyV
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"

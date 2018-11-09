@@ -16,7 +16,7 @@ import org.broadinstitute.dsde.workbench.avram.Avram
 import scala.util.Try
 
 @Path("/api/collections/v1")
-class CollectionsServlet(avram: Avram) extends AvramServlet(avram) {
+class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   def this() = this(Avram)
 
   private val collectionsService = new CollectionsService()

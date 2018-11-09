@@ -12,7 +12,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 
-class CollectionsServletSpec extends TestComponent with FlatSpecLike with MockitoSugar {
+class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with MockitoSugar {
 
   val mockSamDao: SamDao = mock[SamDao]
   val token = "Bearer ya.test-token"
@@ -24,13 +24,13 @@ class CollectionsServletSpec extends TestComponent with FlatSpecLike with Mockit
     override def database: DbReference = Avram.database
     override def samDao: SamDao = mockSamDao
   }
-  val collectionsServlet = new CollectionsServlet(testAvram)
+  val collectionsEndpoint = new CollectionsEndpoint(testAvram)
 
   "CollectionsServlet" should "POST and GET a collection" in isolatedDbTest {
 
     // create collection
     val samResource = SamResource("samResourceTest")
-    val createResponse = collectionsServlet.postCollection(token, samResource.resourceName)
+    val createResponse = collectionsEndpoint.postCollection(token, samResource.resourceName)
     createResponse.getStatus should be (200)
     createResponse.hasEntity should be (true)
 
@@ -41,7 +41,7 @@ class CollectionsServletSpec extends TestComponent with FlatSpecLike with Mockit
     }
 
     // get collection
-    val getResponse = collectionsServlet.getCollection(token, collectionExternalId.toString)
+    val getResponse = collectionsEndpoint.getCollection(token, collectionExternalId.toString)
     getResponse.getStatus should be (200)
     getResponse.getEntity should be (createResponse.getEntity)
 

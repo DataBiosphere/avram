@@ -16,7 +16,7 @@ import org.broadinstitute.dsde.workbench.avram.util.AvramResult.unsafeRun
 import scala.concurrent.ExecutionContext
 
 
-abstract class AvramServlet(avram: Avram) {
+abstract class AvramEndpoint(avram: Avram) {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
