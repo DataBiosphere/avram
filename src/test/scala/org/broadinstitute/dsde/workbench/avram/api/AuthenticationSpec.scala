@@ -9,8 +9,8 @@ class AuthenticationSpec extends FreeSpec with Matchers with MockSam {
   override def samPort = 9999
 
   //TODO - Change this once we decide on how to mock out our tests or potentially just remove this
- // val api = new AvramRoutes
-
+// val api = new AvramRoutes
+//
 //  "authorized ping" - {
 //    "returns 401 when auth token is not given" in {
 //      val r = new FakeHttpServletRequest()
