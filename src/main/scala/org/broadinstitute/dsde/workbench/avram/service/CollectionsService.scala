@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 
 class CollectionsService(implicit executionContext: ExecutionContext) extends AvramService {

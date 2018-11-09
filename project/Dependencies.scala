@@ -14,6 +14,7 @@ object Dependencies {
   val sttpV           = "1.3.1"
   val circeV          = "0.10.0"
   val javaxServletV   = "3.1.0"
+  val jerseyV         = "2.26"
 
   val workbenchUtilV    = "0.3-0e9d080"
   val workbenchModelV   = "0.11-2ce3359"
@@ -23,7 +24,6 @@ object Dependencies {
   val samV =  "1.0-5cdffb4"
 
   val excludeAkkaActor =        ExclusionRule(organization = "com.typesafe.akka", name = "akka-actor_2.12")
-
   val excludeGuavaJDK5 =        ExclusionRule(organization = "com.google.guava", name = "guava-jdk5")
   val excludeWorkbenchUtil =    ExclusionRule(organization = "org.broadinstitute.dsde.workbench", name = "workbench-util_2.12")
   val excludeWorkbenchModel =   ExclusionRule(organization = "org.broadinstitute.dsde.workbench", name = "workbench-model_2.12")
@@ -42,6 +42,9 @@ object Dependencies {
   val enumeratum: ModuleID =     "com.beachape"               %% "enumeratum"      % "1.5.13"
 
   val javaxServlet: ModuleID = "javax.servlet" % "javax.servlet-api" % javaxServletV % "provided"
+  val jerseyServer: ModuleID = "org.glassfish.jersey.core" % "jersey-server" % jerseyV
+  val glassFish: ModuleID = "org.glassfish.jersey.containers" % "jersey-container-servlet" % jerseyV
+  val glassFishInject: ModuleID = "org.glassfish.jersey.inject" % "jersey-hk2" % jerseyV
 
   val googleEndpointsFramework = "com.google.endpoints" % "endpoints-framework" % "2.1.1"
   val googleEndpointsManagementControl = "com.google.endpoints" % "endpoints-management-control-appengine" % "1.0.8"
@@ -55,7 +58,7 @@ object Dependencies {
 
 
   val scalaTest: ModuleID =  "org.scalatest"   %% "scalatest"       % scalaTestV % "test"
-  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.18.3"   % "test"
+  val mockito: ModuleID =    "org.mockito"     % "mockito-core"     % "2.20.1"   % "test"
   val mockServer: ModuleID = "org.mock-server" % "mockserver-netty" % "5.4.1"    % "test"
 
   // Exclude workbench-libs transitive dependencies so we can control the library versions individually.
@@ -104,6 +107,9 @@ object Dependencies {
     enumeratum,
 
     javaxServlet,
+    jerseyServer,
+    glassFish,
+    glassFishInject,
     sttp,
     sttpCats,
 
@@ -118,6 +124,7 @@ object Dependencies {
     googleSourceRepositories,
 
     scalaTest,
+    mockito,
     mockServer,
 
     slick,

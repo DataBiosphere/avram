@@ -1,54 +1,46 @@
 package org.broadinstitute.dsde.workbench.avram.api
 
 import java.util.UUID
+import javax.servlet.http.HttpServletResponse
 
 import io.circe.generic.auto._
-import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
+import javax.ws.rs._
+import javax.ws.rs.core.Response.Status
+import javax.ws.rs.core.{HttpHeaders, Response}
+
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}
 import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
+import org.broadinstitute.dsde.workbench.avram.Avram
 
 import scala.util.Try
 
-
-class CollectionsServlet extends HttpServlet with AvramServlet {
+@Path("/api/collections/v1")
+class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
+  def this() = this(Avram)
 
   private val collectionsService = new CollectionsService()
 
-  override def doGet(request: HttpServletRequest, response: HttpServletResponse): Unit = {
-    handleAuthenticatedRequest(request, response) { _ =>
+  @GET
+  @Produces(Array("application/json"))
+  @Path("/{externalId}")
+  def getCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("externalId") externalId: String): Response = {
+    handleAuthenticatedRequest(bearerToken) { _ =>
       for {
-        collectionExternalId <- extractCollectionId(request)
-        collection <- collectionsService.getCollection(collectionExternalId)
+        collectionExternalUUID <- AvramResult.fromTry(Try(UUID.fromString(externalId)), AvramException(HttpServletResponse.SC_BAD_REQUEST, "Malformed collection ID"))
+        collection <- collectionsService.getCollection(collectionExternalUUID)
       } yield collection
     }
   }
 
-  override def doPost(request: HttpServletRequest, response: HttpServletResponse): Unit = {
-    handleAuthenticatedRequest(request, response) { userInfo =>
+  @POST
+  @Produces(Array("application/json"))
+  @Path("/{samResource}")
+  def postCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("samResource") samResource: String): Response = {
+    handleAuthenticatedRequest(bearerToken) { userInfo =>
       for {
-        samResource <- extractSamResource(request)
-        collection <- collectionsService.createCollection(samResource, userInfo.userEmail)
+        collection <- collectionsService.createCollection(SamResource(samResource), userInfo.userEmail)
       } yield collection
     }
-  }
-
-  private def extractCollectionId(request: HttpServletRequest): AvramResult[UUID] = {
-    for {
-      param <- extractPathInfo(request, "Missing collection ID path parameter")
-      uuid <- AvramResult.fromTry(Try(UUID.fromString(param)), AvramException(HttpServletResponse.SC_BAD_REQUEST, "Malformed collection ID"))
-    } yield uuid
-  }
-
-  private def extractSamResource(request: HttpServletRequest): AvramResult[SamResource] = {
-    for {
-      param <- extractPathInfo(request, "Missing sam resource ID path parameter")
-    } yield SamResource(param)
-  }
-
-  private def extractPathInfo(request: HttpServletRequest, errorMessage: String): AvramResult[String] = {
-    for {
-      pathInfo <- AvramResult.fromOption(Option(request.getPathInfo), AvramException(HttpServletResponse.SC_BAD_REQUEST, errorMessage))
-    } yield pathInfo.stripPrefix("/")
   }
 }
