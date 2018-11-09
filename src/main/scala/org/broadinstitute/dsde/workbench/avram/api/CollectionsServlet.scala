@@ -22,6 +22,7 @@ class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   private val collectionsService = new CollectionsService()
 
   @GET
+  @Produces(Array("application/json"))
   @Path("/{externalId}")
   def getCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("externalId") externalId: String): Response = {
     handleAuthenticatedRequest(bearerToken) { _ =>
@@ -33,6 +34,7 @@ class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   }
 
   @POST
+  @Produces(Array("application/json"))
   @Path("/{samResource}")
   def postCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("samResource") samResource: String): Response = {
     handleAuthenticatedRequest(bearerToken) { userInfo =>
