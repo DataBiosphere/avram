@@ -3,6 +3,8 @@
 Avram is a metadata manager that allows analysts to create and manage [meta]data entries that follow 
 flexible, user-defined models.
 
+[Here is a doc about graphQL spike.](https://docs.google.com/document/d/1tbMMe5IxWY42HRrOQkL_DR8xOyYzZoQPAadb3XGEWXY/edit#)
+
 ## Running tests
 From avram root:
 ```
@@ -28,4 +30,3 @@ Avram is in its own google project: broad-avram-dev.
 To deploy to dev run the deploy.sh script
 
 To execute one of the endpoints on the dev environment use [openapi](https://endpointsportal.broad-avram-dev.cloud.goog/)
-
