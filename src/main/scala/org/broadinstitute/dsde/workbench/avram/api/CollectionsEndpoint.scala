@@ -17,7 +17,7 @@ import scala.util.Try
 class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   def this() = this(Avram)
 
-  private val collectionsService = Avram.collectionsService
+  private val collectionsService = avram.collectionsService
 
   @GET
   @Produces(Array("application/json"))

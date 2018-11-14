@@ -16,10 +16,10 @@ import org.mockito.Mockito._
 class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with DatabaseWipe with MockitoSugar {
 
   val mockSamDao: SamDao = mock[SamDao]
-  val token = "Bearer ya.test-token"
+  val token = "ya.test-token"
+  val authenticationHeader = s"Bearer $token"
   val subjectId = "123"
   val email = "test@dummy.org"
-  when(mockSamDao.getUserStatus(any[String])).thenReturn(AvramResult.pure((SamUserInfoResponse(subjectId, email, enabled = true))))
 
   object testAvram extends Avram {
     override def database: DbReference = Avram.database
@@ -29,10 +29,13 @@ class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with Datab
   val collectionsEndpoint = new CollectionsEndpoint(testAvram)
 
   "CollectionsServlet" should "POST and GET a collection" in {
+    val samResource = SamResource("samResourceTest")
+
+    when(mockSamDao.getUserStatus(any[String])).thenReturn(AvramResult.pure(SamUserInfoResponse(subjectId, email, enabled = true)))
 
     // create collection
-    val samResource = SamResource("samResourceTest")
-    val createResponse = collectionsEndpoint.postCollection(token, samResource.resourceName)
+    when(mockSamDao.queryAction(samResource, "write", token)).thenReturn(AvramResult.pure(true))
+    val createResponse = collectionsEndpoint.postCollection(authenticationHeader, samResource.resourceName)
     createResponse.getStatus should be (200)
     createResponse.hasEntity should be (true)
 
@@ -43,7 +46,8 @@ class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with Datab
     }
 
     // get collection
-    val getResponse = collectionsEndpoint.getCollection(token, collectionExternalId.toString)
+    when(mockSamDao.queryAction(samResource, "read", token)).thenReturn(AvramResult.pure(true))
+    val getResponse = collectionsEndpoint.getCollection(authenticationHeader, collectionExternalId.toString)
     getResponse.getStatus should be (200)
     getResponse.getEntity should be (createResponse.getEntity)
 
