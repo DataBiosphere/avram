@@ -1,7 +1,7 @@
 package org.broadinstitute.dsde.workbench.avram.dataaccess
 
 import org.broadinstitute.dsde.workbench.avram.AvramResultSupport
-import org.broadinstitute.dsde.workbench.avram.model.AvramException
+import org.broadinstitute.dsde.workbench.avram.model.{AvramException, SamResource}
 import org.mockserver.model.HttpResponse.response
 import org.scalatest.{FreeSpec, Matchers}
 
@@ -43,7 +43,7 @@ class HttpSamDaoSpec extends FreeSpec with Matchers with AvramResultSupport with
       "should query sam and translate the response to a boolean" in {
         val request = buildQueryActionRequest("sam-resource-123", "read", "token")
         mockSam.when(request).respond(response("true"))
-        val result = samDao.queryAction("sam-resource-123", "read", "token")
+        val result = samDao.queryAction(SamResource("sam-resource-123"), "read", "token")
         unsafeRun(result) shouldEqual true
         mockSam.verify(request)
       }

@@ -3,24 +3,39 @@ package org.broadinstitute.dsde.workbench.avram.service
 import java.util.UUID
 
 import javax.servlet.http.HttpServletResponse
+import org.broadinstitute.dsde.workbench.avram.UserInfo
+import org.broadinstitute.dsde.workbench.avram.dataaccess.SamDao
 import org.broadinstitute.dsde.workbench.avram.model.{AvramException, Collection, SamResource}
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 
 import scala.concurrent.ExecutionContext
 
 
-class CollectionsService(implicit executionContext: ExecutionContext) extends AvramService {
+class CollectionsService(val samDao: SamDao)(implicit executionContext: ExecutionContext) extends AvramService {
 
-  def createCollection(samResource: SamResource, createdBy: String): AvramResult[Collection] = {
-    val collectionExternalId = UUID.randomUUID()
-    AvramResult.fromFuture(database.inTransaction(_.collectionQuery.save(collectionExternalId, samResource, createdBy)))
+  def createCollection(samResource: SamResource, createdBy: UserInfo): AvramResult[Collection] = {
+    for {
+      _ <- checkAuthorization(samResource, "write", createdBy.token)
+      collection <- saveCollection(samResource, createdBy)
+    } yield collection
   }
 
-  def getCollection(externalId: UUID): AvramResult[Collection] = {
+  def getCollection(externalId: UUID, userInfo: UserInfo): AvramResult[Collection] = {
+    for {
+      collection <- fetchCollection(externalId)
+      _ <- checkAuthorization(collection.samResource, "read", userInfo.token)
+    } yield collection
+  }
+
+  private def fetchCollection(externalId: UUID): AvramResult[Collection] = {
     for {
       result <- AvramResult.fromFuture(database.inTransaction(_.collectionQuery.getCollectionByExternalId(externalId)))
       collection <- AvramResult.fromOption(result, AvramException(HttpServletResponse.SC_NOT_FOUND, s"Collection ${externalId.toString} not found"))
     } yield collection
   }
 
+  private def saveCollection(samResource: SamResource, createdBy: UserInfo): AvramResult[Collection] = {
+    val collectionExternalId = UUID.randomUUID()
+    AvramResult.fromFuture(database.inTransaction(_.collectionQuery.save(collectionExternalId, samResource, createdBy.email)))
+  }
 }
