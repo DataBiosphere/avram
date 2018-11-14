@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait Avram {
   def database: DbReference
   def samDao: SamDao
-  def collectionService: CollectionsService
+  def collectionsService: CollectionsService
 }
 
 /**

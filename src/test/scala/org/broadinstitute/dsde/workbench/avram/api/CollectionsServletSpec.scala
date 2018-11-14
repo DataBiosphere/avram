@@ -4,15 +4,16 @@ import io.circe.generic.auto._
 import io.circe.parser._
 import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{SamDao, SamUserInfoResponse}
-import org.broadinstitute.dsde.workbench.avram.db.{DbReference, TestComponent}
+import org.broadinstitute.dsde.workbench.avram.db.{DatabaseWipe, DbReference, TestComponent}
 import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
+import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 import org.scalatest.FlatSpecLike
 import org.scalatest.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 
-class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with MockitoSugar {
+class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with DatabaseWipe with MockitoSugar {
 
   val mockSamDao: SamDao = mock[SamDao]
   val token = "Bearer ya.test-token"
@@ -23,10 +24,11 @@ class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with Mocki
   object testAvram extends Avram {
     override def database: DbReference = Avram.database
     override def samDao: SamDao = mockSamDao
+    override def collectionsService: CollectionsService = new CollectionsService(mockSamDao)
   }
   val collectionsEndpoint = new CollectionsEndpoint(testAvram)
 
-  "CollectionsServlet" should "POST and GET a collection" in isolatedDbTest {
+  "CollectionsServlet" should "POST and GET a collection" in {
 
     // create collection
     val samResource = SamResource("samResourceTest")
