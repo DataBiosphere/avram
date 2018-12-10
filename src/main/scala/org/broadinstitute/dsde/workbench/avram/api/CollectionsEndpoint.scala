@@ -17,7 +17,7 @@ import scala.util.Try
 class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   def this() = this(Avram)
 
-  private val collectionsService = avram.collectionsService
+  private val collectionService = avram.collectionService
 
   @GET
   @Produces(Array("application/json"))
@@ -26,7 +26,7 @@ class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
     handleAuthenticatedRequest(bearerToken) { userInfo =>
       for {
         collectionExternalUUID <- AvramResult.fromTry(Try(UUID.fromString(externalId)), AvramException(Status.BAD_REQUEST.getStatusCode, "Malformed collection ID"))
-        collection <- collectionsService.getCollection(collectionExternalUUID, userInfo)
+        collection <- collectionService.getCollection(collectionExternalUUID, userInfo)
       } yield collection
     }
   }
@@ -37,8 +37,22 @@ class CollectionsEndpoint(avram: Avram) extends AvramEndpoint(avram) {
   def postCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("samResource") samResource: String): Response = {
     handleAuthenticatedRequest(bearerToken) { userInfo =>
       for {
-        collection <- collectionsService.createCollection(SamResource(samResource), userInfo)
+        collection <- collectionService.createCollection(SamResource(samResource), userInfo)
       } yield collection
     }
   }
+
+  @DELETE
+  @Produces(Array("application/json"))
+  @Path("/{externalId}")
+  def deleteCollection(@HeaderParam(HttpHeaders.AUTHORIZATION) bearerToken: String, @PathParam("externalId") externalId: String): Response = {
+    handleAuthenticatedRequest(bearerToken) { userInfo =>
+      for {
+        collectionExternalUUID <- AvramResult.fromTry(Try(UUID.fromString(externalId)), AvramException(Status.BAD_REQUEST.getStatusCode, "Malformed collection ID"))
+        _ <- collectionService.deleteCollection(collectionExternalUUID, userInfo)
+      } yield {()}
+    }
+  }
+
+
 }

@@ -6,7 +6,7 @@ import org.broadinstitute.dsde.workbench.avram.Avram
 import org.broadinstitute.dsde.workbench.avram.dataaccess.{SamDao, SamUserInfoResponse}
 import org.broadinstitute.dsde.workbench.avram.db.{DatabaseWipe, DbReference, TestComponent}
 import org.broadinstitute.dsde.workbench.avram.model.{Collection, SamResource}
-import org.broadinstitute.dsde.workbench.avram.service.CollectionsService
+import org.broadinstitute.dsde.workbench.avram.service.CollectionService
 import org.broadinstitute.dsde.workbench.avram.util.AvramResult
 import org.scalatest.FlatSpecLike
 import org.scalatest.mockito.MockitoSugar
@@ -24,11 +24,11 @@ class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with Datab
   object testAvram extends Avram {
     override def database: DbReference = Avram.database
     override def samDao: SamDao = mockSamDao
-    override def collectionsService: CollectionsService = new CollectionsService(mockSamDao)
+    override def collectionsService: CollectionService = new CollectionService(mockSamDao)
   }
   val collectionsEndpoint = new CollectionsEndpoint(testAvram)
 
-  "CollectionsServlet" should "POST and GET a collection" in {
+  "CollectionsServlet" should "POST and GET and DELETE a collection" in {
     val samResource = SamResource("samResourceTest")
 
     when(mockSamDao.getUserStatus(any[String])).thenReturn(AvramResult.pure(SamUserInfoResponse(subjectId, email, enabled = true)))
@@ -50,6 +50,15 @@ class CollectionsEndpointSpec extends TestComponent with FlatSpecLike with Datab
     val getResponse = collectionsEndpoint.getCollection(authenticationHeader, collectionExternalId.toString)
     getResponse.getStatus should be (200)
     getResponse.getEntity should be (createResponse.getEntity)
+
+    // delete collection
+    when(mockSamDao.queryAction(samResource, "delete", token)).thenReturn(AvramResult.pure(true))
+    val deleteResponse = collectionsEndpoint.deleteCollection(authenticationHeader, collectionExternalId.toString)
+    deleteResponse.getStatus should be (200)
+
+    // try to get the deleted collection
+    val getDeletedResponse = collectionsEndpoint.getCollection(authenticationHeader, collectionExternalId.toString)  // might have to catch this exception
+    getDeletedResponse.getStatus should be (404)
 
   }
 }

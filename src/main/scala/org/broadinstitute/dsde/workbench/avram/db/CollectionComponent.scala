@@ -58,8 +58,13 @@ trait CollectionComponent extends AvramComponent {
         unmarshalCollections(recs).headOption
       }
     }
+
     def deleteCollectionByExternalId(externalId: UUID): DBIO[Int] = {
       collectionQuery.filter { _.externalId === externalId }.delete
+    }
+
+    def changeSamResource(externalId: UUID, newSamResource: SamResource): DBIO[Int] = {
+      collectionQuery.filter { _.externalId === externalId }.map(_.samResource).update(newSamResource.resourceName)
     }
 
     private def unmarshalCollection(rec: CollectionRecord): Collection = {
